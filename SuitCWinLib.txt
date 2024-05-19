@@ -1,0 +1,7 @@
+SuitCLib: Contains Windows SuitCLib ported to VS C++
+Demo: Contains C# code for using the library
+Example: A compiled and running example
+
+Note: The project should be compiled in release mode (For unknown reason the debug version is broken).
+
+Compiled and tested in VS2022

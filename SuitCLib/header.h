@@ -11,8 +11,13 @@
 #include <stdbool.h>
 
 
-//      Copyright 2020, Gerrit A. van der Velde, Leiden
-
+//SuitC
+//Copyright 2020, Gerrit A. van der Velde, Leiden
+// 
+//Windows library version created by
+//Lars Kappel Hansen
+//https://bridge.esmarkkappel.dk
+ 
 //  list of cpp defines
 //  ----------------------------------------------------------------------------
 #define addcard( c )                    ( ( (COLOR) 1 ) << ( c ) )

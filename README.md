@@ -1,3 +1,3 @@
 # SuitCWinLib
- SuitCWinLib
-Compiles with VS2022
+ SuitCWinLib (see SuitCWinLib.txt for instructions)
+
