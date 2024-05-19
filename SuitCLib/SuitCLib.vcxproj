@@ -155,6 +155,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(ProjectDir)x64\release\SuitCLib.dll $(ProjectDir)..\Demo\bin\Release\net8.0-windows</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying SuitCLib.dll to the demo project</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
