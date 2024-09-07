@@ -2,18 +2,18 @@
 //      evaluate_mp_results
 //
 //  purpose:
-//      evaluate_mp_results calculates the percentage contributionms to the matchpoint plays
+//      evaluate_mp_results calculates the percentage contributions to the MP or IMP plays
 //
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
 void evaluate_mp_results( void )
 {
-    int           goon = YES, i, ix, jpiv[2*NNODE], list, n, nnode;
+    int           best_MP, goon = YES, i, ix, jpiv[2*NNODE], list, n, nnode;
     double        p[NNODE];
     struct SCORE  *bscore, *lscore;
 
@@ -48,7 +48,7 @@ void evaluate_mp_results( void )
         }
     }
 
-    //  count the number of matchpoint plays
+    //  count the number of MP or IMP plays
     nnode = 0;
     lscore = score[0].r;
     while ( lscore->r ) {
@@ -63,7 +63,7 @@ void evaluate_mp_results( void )
         exit( 1 );
     }
 
-    //  there is only one MP play, so there is no need to call minimax
+    //  there is only one MP or IMP play, so there is no need to call minimax
     if ( nnode == 1 ) {
         list = 0;
         lscore = score[0].r;
@@ -74,10 +74,10 @@ void evaluate_mp_results( void )
         }
     }
 
-    //  we have potentially a mixed MP strategy, so the minimax routine is used
+    //  we have potentially a mixed MP or IMP strategy, so the minimax routine is used
     else if ( nnode > 1 ) {
 
-        //  collect the matchpoint scores
+        //  collect the MP or IMP scores
         nnode = 0;
         lscore = score[0].r;
         while ( lscore->r ) {
@@ -93,7 +93,7 @@ void evaluate_mp_results( void )
             lscore = lscore->r;
         }
 
-        //  compute the matchpoint results with the minimax solver
+        //  compute the MP or IMP results with the minimax solver
         minimax( nnode, jpiv, p );
 
         //  store the percentages
@@ -110,7 +110,7 @@ void evaluate_mp_results( void )
             lscore = lscore->r;
         }
 
-        //  store the matchpoint results
+        //  store the MP or IMP results
         n = 0;
         list = 0;
         nnode = 0;
@@ -146,7 +146,7 @@ void evaluate_mp_results( void )
         }
     }
 
-    //  calculate the matchpoint scores
+    //  calculate the MP or IMP scores
     for ( i = 1; i <= nplays; i++ ) {
         lscore = score[0].r;
         while ( lscore->r ) {
@@ -155,32 +155,23 @@ void evaluate_mp_results( void )
         }
     }
 
-    //  clear the matchpoint flag if a no MAX play scores worse than a MP play
+    //  clear the matchpoint flag if no MAX play scores worse than a MP or IMP play
     if ( nnode == 1 ) {
 
         //  clear the matchpoint flag if the list contains a MAX play
-        matchpoint = NO;
+        best_MP = NO;
         for ( i = 1; i <= nplays; i++ )
-            matchpoint |= score[i].best_MAX != score[i].best_MP;
+            best_MP |= score[i].best_MAX != score[i].best_MP;
 
         //  clear the best_MP flag
-        if ( ! matchpoint ) {
-            matchpoint = NO;
-            lscore = score[0].r;
-            while ( lscore->r ) {
-                free( lscore->mp );
-                lscore->mp = NIL;
-                bscore = lscore;
-                while ( bscore ) {
-                    bscore->best_MP = NO;
-                    bscore = bscore->b;
-                }
-                lscore = lscore->r;
-            }
+        if ( ! best_MP ) {
+            for ( i = 1; i <= nplays; i++ )
+                score[i].best_MP = NO;
+            matchpoint = best_MP || printallmatchpoint ? matchpoint : NO;
         }
     }
 
-    //  print the matchpoint matrix for a mixed matchpoint strategy
+    //  print the MP or IMP matrix for a mixed MP or IMP strategy
     if ( matchpoint && ( nnode > 1 || list > 1 ) ) {
 
         //  renumber the nodes
@@ -191,7 +182,7 @@ void evaluate_mp_results( void )
                     score[i].ix = ix++;
         }
 
-        //  print lists of equivalent MP plays
+        //  print lists of equivalent MP or IMP plays
         lscore = score[0].r;
         printf( "\n\n\nThe matchpoint strategy\n=======================\n\n" );
         while ( lscore->r ) {

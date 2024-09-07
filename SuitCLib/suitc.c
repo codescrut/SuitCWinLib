@@ -12,6 +12,7 @@
 //  Copyright 2020, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
+#include "global.h"
 
 int noOfOptimumDetails;
 bool outputEnabled;
@@ -141,8 +142,11 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     nextnode = wnode[0];
     nextnode++;
 
+    int c;
     //  create the boards
-    create_boards(output);
+    if ((c = create_boards()) != 0) {
+        return c;
+    };
     //  build the tree
     ns[0] = defence ? tricklimit : 0;
     create_tricks( 1 );
@@ -152,7 +156,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         printf( "\n\nThe truncated NODE tree\n" );
         printf(   "=======================\n" );
         int dummy;
-        print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy );
+        print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy);
         printf( "\n\n\n" );
         fflush( stdout );
     }
@@ -176,10 +180,11 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     nextquirkh = malloc( NPLAYS * sizeof( struct QUIRKH ) );
     savenextquirkh = nextquirkh;
     if ( ! nextquirkh ) {
-        output_error(output, "The memory assignment for the TRICKS entries failed");
+        output_error(output, "The memory assignment for the QUIRKH entries failed");
         release_memory();
         return -1;
     }
+
     tricks = malloc( (long) boardcount * NPLAYS * sizeof( struct TRICKS ) );
     savetricks = tricks;
     if ( ! tricks ) {
@@ -187,7 +192,6 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         release_memory();
         return -1;
     }
-
     //  build the quirk tree
     if ( sortplays ) {
         count_plays();
@@ -232,8 +236,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     if ( sortplays )
         print_play_count();
 
-    printf( "\n\n\nThe optimal results\n" );
-    printf(   "===================\n\n" );
+    //printf( "\n\n\nThe optimal results\n" );
+    //printf(   "===================\n\n" );
 
     output_add(output, "\"OptimalResults\":[");
 
@@ -246,7 +250,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         int iter = 0;
         for (i = maxns; i > minns; i--)
         {
-            printf("\t%d tricks: %8.4f\n", i, 100.0 * best_result.tricks[i]);
+            //printf("\t%d tricks: %8.4f\n", i, 100.0 * best_result.tricks[i]);
 
             if (iter > 0)
             {
@@ -258,7 +262,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
 
         }
 
-        printf( "\tResult  : %8.4f\n", best_result.result );
+        //printf( "\tResult  : %8.4f\n", best_result.result );
         
         sprintf(str, "],\"Result\":%0.4f,", best_result.result);
         output_add(output, str);
@@ -294,7 +298,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
             printf( "\n\n\nThe full NODE tree\n" );
             printf(   "==================\n" );
             int dummy;
-            print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy );
+            print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy);
             fflush( stdout );
         }
     }
@@ -320,7 +324,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         printf( "\tThe program is finished    %12.3f\n", times[3] );
     }
 
-    printf( "\n\n\n\n" );
+    //printf( "\n\n\n\n" );
 
     //output_add(output, "}}");
     output_error(output, "No errors");

@@ -8,7 +8,7 @@
 //      lnode           in      the node to be printed
 //      ident           in      an identification string
 //
-//  Copyright 2019, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

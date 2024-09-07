@@ -19,11 +19,11 @@ char WideToNarrowChar(wchar_t w)
 	return chars[2];
 }
 
-
-extern "C"
-__declspec(dllexport)
-int 
-__cdecl
+extern "C"             //No name mangling
+__declspec(dllexport)  //Tells the compiler to export the function
+int                    //Function return type     
+__cdecl                //Specifies calling convention, cdelc is default, 
+					   //so this can be omitted 
 
 //returnvalue
 // 0: OK
@@ -32,6 +32,7 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 		   wchar_t** ppcharOutput, int* pCharOutputSize, 
 		   wchar_t** ppcharOptimumDetails, int* pcharOptimumDetailsSize)
 {
+
 	int* argLen = new int[100];
 	int argNo = 0;
 	bool searching = true;
@@ -123,11 +124,9 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 
 	char output[JSON_BUFFER_SIZE];
 	output[0] = '\0';
-	//strncat(test, "abc", 20);
 
 	char optimumDetails[JSON_BUFFER_SIZE];
 	optimumDetails[0] = '\0';
-
 
 	suitc_main(argc, argv, output, optimumDetails);
 
@@ -148,8 +147,6 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 	}
 	(*ppcharOptimumDetails)[outputLen] = L'\0';
 	*pcharOptimumDetailsSize = outputLen;
-
-
 
 	return 0;
 }

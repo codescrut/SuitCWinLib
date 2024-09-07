@@ -13,7 +13,7 @@
 //      tquirkd         in/out  the target QUIRKD tree
 //      tquirkdl        in/out  the left sibling of the current QUIRKD branch
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

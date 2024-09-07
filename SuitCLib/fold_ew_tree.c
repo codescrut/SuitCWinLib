@@ -9,7 +9,7 @@
 //      lnode           in      the first sibling NODE tree
 //      bnode           in      the second sibling NODE tree
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
@@ -20,6 +20,9 @@ int fold_ew_tree( int d, struct NODE **lnode, struct NODE **bnode )
 
     bnode[d] = bnode[d-1]->d;
     lnode[d] = lnode[d-1]->d;
+    if ( ! ( lnode[d] && bnode[d] ) )
+        return( NO );
+
     if ( EW(lnode[d]->p) && EW(bnode[d]->p) ) {
 
         match = YES;
@@ -78,6 +81,7 @@ int fold_ew_tree( int d, struct NODE **lnode, struct NODE **bnode )
                 if ( lnode[d]->p == bnode[d]->p && lnode[d]->c == bnode[d]->c ) {
                     if ( ! bnode[d]->d || fold_ew_tree( d+1, lnode, bnode ) ) {
                         match = YES;
+                        merge_nodes( lnode[d], bnode[d] );
                         lnode[d] = lnode[d]->r;
                     }
                     else

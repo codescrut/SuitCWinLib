@@ -68,6 +68,7 @@
             output.Location = new Point(35, 194);
             output.Multiline = true;
             output.Name = "output";
+            output.ScrollBars = ScrollBars.Vertical;
             output.Size = new Size(672, 640);
             output.TabIndex = 3;
             // 
@@ -83,6 +84,7 @@
             // 
             // optimumDetails
             // 
+            optimumDetails.Font = new Font("Courier New", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             optimumDetails.Location = new Point(741, 194);
             optimumDetails.Multiline = true;
             optimumDetails.Name = "optimumDetails";

@@ -7,7 +7,7 @@
 //  parameters:
 //      lnode           in      the old node
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

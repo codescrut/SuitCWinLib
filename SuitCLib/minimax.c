@@ -2,14 +2,14 @@
 //      minimax
 //
 //  purpose
-//      minimax determines the optimal staregy for both players
+//      minimax determines the optimal strategy for both players
 //
 //  parameters
-//      nnode   in      the dimension of the MP matrix
+//      nnode   in      the dimension of the MP or IMP matrix
 //      jpiv    out     the jpiv array for the colmns
-//      p       out     the probability of this play in the optimal MP strategy
+//      p       out     the probability of this play in the optimal MP or IMP strategy
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

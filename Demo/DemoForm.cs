@@ -1,9 +1,13 @@
+using Newtonsoft.Json;
 using System.Runtime.InteropServices;
 
 namespace Demo
 {
     public partial class DemoForm : Form
     {
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
+
         const int JSON_BUFFER_SIZE = 32768;
 
         [DllImport("SuitCLib.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -15,14 +19,36 @@ namespace Demo
         {
             InitializeComponent();
             input.Text = "-wv9 -ev8 K3 2 AQJT987654";
+            //input.Text = "-Ls -ls1 -c100 A QJT97 K865432";
+            //AllocConsole();  // Attach a console window to your C# WinForms app
+        }
+
+        private void FormatAndDisplayJson(string json)
+        {
+            try
+            {
+                // Parse the JSON to a JObject
+                var parsedJson = JsonConvert.DeserializeObject(json);
+
+                // Pretty print the JSON with indentation
+                string formattedJson = JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+
+                // Display the formatted JSON in the TextBox
+                output.Text = formattedJson;
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show("Failed to format JSON: " + ex.Message);
+            }
         }
 
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
             try
             {
-                output.Text = Calculate(input.Text, out string optDetails);
-                optimumDetails.Text = optDetails;
+                var response = Calculate(input.Text, out string optDetails);
+                FormatAndDisplayJson(response);
+                optimumDetails.Text = optDetails.Replace("\n", "\r\n");
             }
             catch (Exception ex)
             {

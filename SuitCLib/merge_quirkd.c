@@ -7,7 +7,7 @@
 //  parameters:
 //      d               in      the depth in the NODE tree
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
@@ -15,7 +15,7 @@
 
 void merge_quirkd( int d )
 {
-    int           a = 0, b = 0, i, ih=0, k = 0, l = 0, ns, s = 0, t = 0;
+    int           a = 0, b = 0, i, ih = 0, k = 0, l = 0, ns, s = 0, t = 0;
     struct QUIRKD *bquirkd[NBOARDS], *bquirkdl[NBOARDS], *lquirkd[NBOARDS], *lquirkdl[NBOARDS], *tquirkd[NBOARDS], *tquirkdl[NBOARDS];
 
     //  initialise

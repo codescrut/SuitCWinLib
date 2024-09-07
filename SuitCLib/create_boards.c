@@ -8,14 +8,14 @@
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void create_boards(char* output)
+int create_boards( void )
 {
     int          ec, i, k, l, p, q, wc;
-    COLOR        cards = 0, fixed = 0;
+    COLOR        cards, fixed;
     struct INDEX *lindex = NULL;
     struct SCARD *sc;
 
@@ -23,7 +23,7 @@ void create_boards(char* output)
     brd[0][east] = brd[0][west];
     if ( brd[0][north] & brd[0][south] || brd[0][north] & brd[0][west] || brd[0][south] & brd[0][west] ) {
         printf( "ERROR: The input contains duplicate cards\n" );
-        exit( 1 );
+        return 1;
     }
 
     //  determine the number of cards in each hand
@@ -170,6 +170,7 @@ void create_boards(char* output)
     //  generate the board header
     create_board_header();
 
-    //  print the boards
-    print_boards(output);
+    //  print the information about the suit combination and restrictions
+    //print_suitc();
+    return 0;
 }

@@ -3,7 +3,7 @@
 //
 //  purpose:
 //      check_zermelo and evaluate_mp_results use Zermelo's algorithm to eliminate
-//      dominated MP plays from the SCORE list. strongly dominated plays are
+//      dominated MP and IMP plays from the SCORE list. strongly dominated plays are
 //      deleted from the SCORE list in check_zermelo, while weakly dominated
 //      ones are deleted from the SCORE list in check_zermelo if zermelo==2 and
 //      marked in check_zermelo otherwiise. marked weakly dominated plays are
@@ -12,7 +12,7 @@
 //  parameters:
 //      lscore          in      the highest entry to be checked in the SCORE list
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

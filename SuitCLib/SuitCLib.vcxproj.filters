@@ -194,5 +194,11 @@
     <ClCompile Include="create_game_tree_json_value.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\GitHub\SuitC\src\print_stat.c">
+      <Filter>Source Files\c</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\GitHub\SuitC\src\print_suitc.c">
+      <Filter>Source Files\c</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

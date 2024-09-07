@@ -10,7 +10,8 @@
 //      printboards     in      flag to print the boards
 //      printsiblings   in      flag to print the siblings of the root
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
+
 
 #include "header.h"
 
@@ -89,11 +90,13 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_, struct
     for ( l = 0; l < wlen; l++ )
         out[l] = ' ';
     if ( printboards ) {
-        for ( i = ( DUALHEAD ? z_count-1 : ew_c_count-1 ); i >= 0; i-- ) {
+        for ( i = z_count-1; i >= 0; i-- ) {
             l = wlen;
             for ( k = 0; k < boardcount; k++ ) { out[l++] = ' '; out[l++] = b_print[i][k]; }
             out[l++] = '\0'; 
-            printf( "%s\n", out );
+            //printf( "%s\n", out );
+            out[l++] = '\0';
+            //printf("%s\n", out);
             sprintf(str, "%s\n", out);
             if (addJsonOptimumDetails)
             {
@@ -109,8 +112,8 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_, struct
     while ( lnode[d] ) {
 
         //  handle the leader to the trick
-        if ( ( d & 0x3 ) == 0x1 ) 
-        { 
+        if ( ( d & 0x3 ) == 0x1 )
+        {
             out[l++] = seats[lnode[d]->p]; 
             add_tree_element(treeElements, pTreeElementCount, out[l - 1], 0, l - 1);
             out[l++] = ':'; 
@@ -122,6 +125,17 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_, struct
         for ( i = 0; i <= sc->n; i++ )
             if ( cards & sc->c[i] )
                 cards |= sc->c[i];
+
+        //  select the NS card to be played; lead highest from equals, follow lowest from equals
+        if ( NS(lnode[d]->p) && ! printhighcard && cards != 0x1 && cards != addcard(ruff) ) {
+            cards &= brd[st[d].t-1][lnode[d]->p];
+            if ( st[d].ld && YES )
+                while ( cards ^ low_c(cards) )
+                    cards ^= low_c(cards);
+            else
+                cards = low_c(cards);
+            brd[st[d].t][lnode[d]->p] = brd[st[d].t-1][lnode[d]->p] ^ cards;
+        }
 
         //  translate the hand into card symbols
         k = l;
@@ -162,7 +176,7 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_, struct
                 out[k+2*lindex->i] = ( defence ? hexdigit[tricklimit-lindex->min] : hexdigit[lindex->max] );
                 lindex = lindex->r;
             }
-            printf( "%s\n", out );
+            //printf( "%s\n", out );
             sprintf(str, "%s\n", out);
             if (addJsonOptimumDetails)
             {

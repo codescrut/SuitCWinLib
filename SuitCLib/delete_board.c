@@ -10,7 +10,7 @@
 //      lnode           in      the NODE tree
 //      b               in      the board to be deleted
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 

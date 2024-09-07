@@ -7,7 +7,7 @@
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
@@ -23,19 +23,10 @@ void print_summary_results( void )
     out[0] = '\0';
     printf( "\n\n\nThe complete list of play theoretic acceptable results\n"   );
     printf(       "======================================================\n\n" );
-    if ( DUALHEAD ) {
-        for ( i = z_count-1; i >= 0; i-- ) {
-            for ( j = 0; j < boardcount; j++ )
-                printf( " %c", b_print[i][j] );
-            printf( "\n" );
-        }
-    }
-    else {
-        for ( i = ew_c_count-1; i >= 0; i-- ) {
-            for ( j = 0; j < b_count[i]; j++ )
-                printf( " %c", b_print[i][j] );
-            printf( "\n" );
-        }
+    for ( i = z_count-1; i >= 0; i-- ) {
+        for ( j = 0; j < boardcount; j++ )
+            printf( " %c", b_print[i][j] );
+        printf( "\n" );
     }
     for ( i = 0; i < b_count[0]; i++ )
         printf( "--" );

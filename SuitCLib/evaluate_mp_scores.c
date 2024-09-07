@@ -3,18 +3,20 @@
 //
 //  purpose:
 //      evaluate_mp_scores determines the optimal plays in case that
-//      the matchpoint score is taken into account.
+//      the MP or IMP score is taken into account.
 //
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
 void evaluate_mp_scores( void )
 {
     int           b, bx, i, ih, ix = 0, k, l = 0, v;
+    int           imptable[] = { 10, 40, 80, 120, 160, 210, 260, 310, 360, 420, 490, 590, 740, 890,
+                                 1090, 1290, 1490, 1740, 1990, 2240, 2490, 2990, 3490, 3990 };
     double        mpscore[NBOARDS], tsum;
     struct QUIRKD *bquirkd[NBOARDS], *bquirkdl[NBOARDS], *lquirkd[NBOARDS], *lquirkdl[NBOARDS];
     struct RESULT result[NBOARDS];
@@ -111,7 +113,7 @@ void evaluate_mp_scores( void )
         //  we reached a leaf
         else {
 
-            //  allocate memory for the matchpoint scores
+            //  allocate memory for the MP or IMP scores
             ix++;
             lscore = &score[ix];
             lscore->mp = malloc( nplays * sizeof( double ) );
@@ -125,14 +127,23 @@ void evaluate_mp_scores( void )
             bquirkd[0] = bquirkdl[0]->h ? bquirkdl[0]->h->d : NIL;
             while ( bquirkd[b] ) {
 
-                //  calculate the matchpoint score
+                //  calculate the MP or IMP score
                 v = 0;
                 while ( lquirkd[v]->ih < bquirkd[b]->il )
                     v++;
                 for ( k = bquirkd[b]->il; k <= bquirkd[b]->ih; k++ ) {
                     if ( lquirkd[v]->ih < k )
                         v++;
-                    mpscore[k] = lquirkdl[v]->h->t[k].ns > bquirkdl[b]->h->t[k].ns ? 1.0 : lquirkdl[v]->h->t[k].ns < bquirkdl[b]->h->t[k].ns ? -1.0 : 0.0;
+                    if ( matchpoint == MP )
+                        mpscore[k] = lquirkdl[v]->h->t[k].ns > bquirkdl[b]->h->t[k].ns ? 1.0 : lquirkdl[v]->h->t[k].ns < bquirkdl[b]->h->t[k].ns ? -1.0 : 0.0;
+                    else if ( matchpoint == IMP ) {
+                        mpscore[k] = pointscore[lquirkdl[v]->h->t[k].ns] - pointscore[bquirkdl[b]->h->t[k].ns];
+                        mpscore[k] = mpscore[k] >= 0 ? mpscore[k] : -mpscore[k];
+                        i = 24;
+                        while ( i && imptable[i-1] >= mpscore[k] )
+                            i--;
+                        mpscore[k] = ( pointscore[lquirkdl[v]->h->t[k].ns] >= pointscore[bquirkdl[b]->h->t[k].ns] ? i : -i );
+                    }
                     mpscore[k] = prob[k] * dupl[k] * mpscore[k];
                     mpscore[k] += ( k ? mpscore[k-1] : 0.0 );
                 }
@@ -144,7 +155,7 @@ void evaluate_mp_scores( void )
                     bquirkd[b] = bquirkd[b-1]->d;
                 }
 
-                //  we reached a leaf; store the matchpoint score and get the next sibling
+                //  we reached a leaf; store the MP or IMP score and get the next sibling
                 else {
                     bx++;
                     lscore->mp[score[bx].ix] = mpscore[bquirkd[b]->ih];

@@ -2,12 +2,12 @@
 //      limit_matchpoint_nodes
 //
 //  purpose:
-//      limit_matchpoint_nodes limits the number of NODES for the MP evaluation.
+//      limit_matchpoint_nodes limits the number of NODES for the MP or IMP evaluation.
 //
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
@@ -97,6 +97,12 @@ void limit_matchpoint_nodes( void )
         results[ix].keep |= testlow < results[ix].result;
     nplays = clean_quirkd( 0, results );
 
-    printf( "\t#nodes for MP plays : %d\n", nplays );
-    printf( "\tcutoff for MP plays : %6.4f\n", best_result.result - testlow ); fflush( stdout );
+    if ( matchpoint == MP ) {
+        printf( "\t#nodes for MP plays : %d\n", nplays );
+        printf( "\tcutoff for MP plays : %6.4f\n", best_result.result - testlow ); fflush( stdout );
+    }
+    if ( matchpoint == IMP ) {
+        printf( "\t#nodes for IMP plays: %d\n", nplays );
+        printf( "\tcutoff for IMP plays: %6.4f\n", best_result.result - testlow ); fflush( stdout );
+    }
 }

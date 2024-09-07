@@ -9,7 +9,7 @@
 //      node1           in      the first sibling
 //      node2           in      the second sibling
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
