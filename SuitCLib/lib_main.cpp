@@ -17,7 +17,7 @@ extern "C" EXPORT const char* CALLCONV
 
 version()
 {
-	static const char ver[] = "0.9.0.4";  // Ensure memory remains valid
+	static const char ver[] = "0.9.0.5";  // Ensure memory remains valid
 	return ver;
 }
 
