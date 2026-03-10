@@ -1,4 +1,8 @@
+using Newtonsoft.Json;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using System.Xml;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Demo
 {
@@ -17,11 +21,39 @@ namespace Demo
             input.Text = "-wv9 -ev8 K3 2 AQJT987654";
         }
 
+        private void ApplySyntaxHighlighting()
+        {
+            output.SelectAll();
+            output.SelectionColor = Color.Black; // Default color
+
+            // Color JSON keys (e.g., "name":)
+            HighlightPattern("\"(.*?)\"\\s*:", Color.Blue);
+
+            // Color string values (e.g., "New York")
+            HighlightPattern(":\\s*\"(.*?)\"", Color.Brown);
+
+            // Color numbers (e.g., 52.9412, 1, 0.5294)
+            HighlightPattern("\\b\\d+(\\.\\d+)?\\b", Color.Green);
+        }
+
+        private void HighlightPattern(string pattern, Color color)
+        {
+            MatchCollection matches = Regex.Matches(output.Text, pattern);
+            foreach (Match match in matches)
+            {
+                output.Select(match.Index, match.Length);
+                output.SelectionColor = color;
+            }
+        }
         private void buttonCalculate_Click(object sender, EventArgs e)
         {
             try
             {
-                output.Text = Calculate(input.Text, out string optDetails);
+                
+                var jsonString = Calculate(input.Text, out string optDetails);
+                string formattedJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(jsonString), Formatting.Indented);
+                output.Text = formattedJson;
+                ApplySyntaxHighlighting();
                 optimumDetails.Text = optDetails;
             }
             catch (Exception ex)

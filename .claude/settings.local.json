@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs:*)",
+      "Bash(cmd.exe:*)",
+      "Bash(cmd.exe /c \"dir /s /b \"\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\MSBuild.exe\"\"\")",
+      "Bash(\"/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/MSBuild.exe\" \"D:\\\\GitHub\\\\SuitCWinLib\\\\SuitCLib.sln\" /p:Configuration=Release /p:Platform=x64)",
+      "Bash(powershell.exe:*)",
+      "Bash(wsl bash -c \"cd /mnt/d/GitHub/SuitCWinLib/SuitCLib && make clean && make\")",
+      "Read(//d/Source/Repos/BrillSolution/Brill.PlayEngine/**)",
+      "Read(//d/Source/Repos/BrillSolution/**)"
+    ],
+    "additionalDirectories": [
+      "D:\\Source\\Repos\\BrillSolution\\Brill.PlayEngine\\SuitC",
+      "D:\\Source\\Repos\\BrillSolution\\Brill.PlayEngine"
+    ]
+  }
+}

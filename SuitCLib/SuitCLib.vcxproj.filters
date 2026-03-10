@@ -30,6 +30,12 @@
     <ClInclude Include="lib_main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="bump_codes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -44,7 +50,10 @@
     <ClCompile Include="add_node.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="add_quirkd.c">
+    <ClCompile Include="add_quirk.c">
+      <Filter>Source Files\c</Filter>
+    </ClCompile>
+    <ClCompile Include="apply_played_tricks.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="build_selected_tree.c">
@@ -62,7 +71,7 @@
     <ClCompile Include="check_zermelo.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="clean_quirkd.c">
+    <ClCompile Include="clean_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="convert_tree_to_quirk.c">
@@ -74,10 +83,7 @@
     <ClCompile Include="copy_tree.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="count_plays.c">
-      <Filter>Source Files\c</Filter>
-    </ClCompile>
-    <ClCompile Include="count_quirkd.c">
+    <ClCompile Include="count_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="create_all_boards.c">
@@ -107,7 +113,7 @@
     <ClCompile Include="delete_board.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="delete_quirkd.c">
+    <ClCompile Include="delete_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="delete_tree.c">
@@ -125,28 +131,22 @@
     <ClCompile Include="evaluate_mp_scores.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="fold_ew_tree.c">
+    <ClCompile Include="fold_tree.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="fold_ns_tree.c">
-      <Filter>Source Files\c</Filter>
-    </ClCompile>
-    <ClCompile Include="fold_quirkd.c">
+    <ClCompile Include="fold_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="limit_matchpoint_nodes.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="limit_quirkd.c">
+    <ClCompile Include="limit_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="merge_nodes.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="merge_quirkd.c">
-      <Filter>Source Files\c</Filter>
-    </ClCompile>
-    <ClCompile Include="merge_tree.c">
+    <ClCompile Include="merge_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="minimax.c">
@@ -161,10 +161,7 @@
     <ClCompile Include="print_node.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="print_play_count.c">
-      <Filter>Source Files\c</Filter>
-    </ClCompile>
-    <ClCompile Include="print_quirkd.c">
+    <ClCompile Include="print_quirk.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="print_results.c">
@@ -185,14 +182,34 @@
     <ClCompile Include="select_ns_plays.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
-    <ClCompile Include="sort_plays.c">
-      <Filter>Source Files\c</Filter>
-    </ClCompile>
     <ClCompile Include="suitc.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
     <ClCompile Include="create_game_tree_json_value.c">
       <Filter>Source Files\c</Filter>
     </ClCompile>
+    <ClCompile Include="fold_ew_tree.c">
+      <Filter>Source Files\c</Filter>
+    </ClCompile>
+    <ClCompile Include="print_stat.c">
+      <Filter>Source Files\c</Filter>
+    </ClCompile>
+    <ClCompile Include="fold_ns_tree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="print_suitc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="use_suit_entries.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="suitc_globals.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SuitCLib.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

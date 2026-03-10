@@ -5,34 +5,52 @@
 //Lars Kappel Hansen
 //https://bridge.esmarkkappel.dk
 
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+#define CALLCONV __cdecl
+#else
+#define EXPORT __attribute__((visibility("default")))
+#define CALLCONV
+#endif
+
+extern "C" EXPORT const char* CALLCONV
+
+version()
+{
+	static const char ver[] = "0.9.0.4";  // Ensure memory remains valid
+	return ver;
+}
 
 extern "C"
 {
 #include "header.h"
 }
-
+#include <signal.h>
 
 char WideToNarrowChar(wchar_t w)
 {
-	char* chars = new char[5];
-	chars[2] = (char)w;
-	return chars[2];
+	//char* chars = new char[5];
+	//chars[2] = (char)w;
+	//return chars[2];
+	return (char)w;
 }
 
-
-extern "C"
-__declspec(dllexport)
-int 
-__cdecl
+void signal_handler(int sig)
+{
+	printf("Exception caught: Segmentation fault (signal %d)!\n", sig);
+	exit(1);  // Exit safely
+}
 
 //returnvalue
 // 0: OK
 // 1: Error
-call_suitc(wchar_t** ppcharInput, int inputSize, 
+extern "C" EXPORT int CALLCONV
+ call_suitc(wchar_t** ppcharInput, int inputSize, 
 		   wchar_t** ppcharOutput, int* pCharOutputSize, 
 		   wchar_t** ppcharOptimumDetails, int* pcharOptimumDetailsSize)
 {
-	int* argLen = new int[100];
+	signal(SIGSEGV, signal_handler);  // Catch segmentation faults
+	int* argLen = new int[1000];
 	int argNo = 0;
 	bool searching = true;
 	for (int i = 0; i < inputSize; i++)
@@ -130,9 +148,7 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 
 
 	suitc_main(argc, argv, output, optimumDetails);
-
 	int outputLen = strlen(output);
-	int count = 0;
 	for (int i = 0; i < outputLen; i++)
 	{
 		(*ppcharOutput)[i] = output[i];
@@ -141,7 +157,6 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 	*pCharOutputSize = outputLen;
 
 	outputLen = strlen(optimumDetails);
-	count = 0;
 	for (int i = 0; i < outputLen; i++)
 	{
 		(*ppcharOptimumDetails)[i] = optimumDetails[i];
@@ -149,46 +164,14 @@ call_suitc(wchar_t** ppcharInput, int inputSize,
 	(*ppcharOptimumDetails)[outputLen] = L'\0';
 	*pcharOptimumDetailsSize = outputLen;
 
-
+	for (int i = 0; i < argc; i++) { // Note: argv[0] was also allocated
+		delete[] argv[i];
+	}
+	delete[] argv;
+	delete[] argLen;
 
 	return 0;
 }
 
-
-extern "C"             //No name mangling
-__declspec(dllexport)  //Tells the compiler to export the function
-void                    //Function return type     
-__cdecl                //Specifies calling convention, cdelc is default, 
-					   //so this can be omitted 
-
-test_suitc()
-{
-	//-EK A 2 KQJT9876543
-	int argc = 5;
-
-	char** argv = new char* [argc];
-	argv[0] = new char[6];
-	strcpy(argv[0], "Dummy");
-
-	argv[1] = new char[50];
-	strcpy(argv[1], "-EK");
-
-	argv[2] = new char[50];
-	strcpy(argv[2], "A");
-
-	argv[3] = new char[50];
-	strcpy(argv[3], "2");
-
-	argv[4] = new char[50];
-	strcpy(argv[4], "KQJT9876543");
-
-	char output[JSON_BUFFER_SIZE];
-	output[0] = '\0';
-	//strncat(test, "abc", 20);
-	char optimumdetails[JSON_BUFFER_SIZE];
-	optimumdetails[0] = '\0';
-
-	suitc_main(argc, argv, output, optimumdetails);
-}
 
 

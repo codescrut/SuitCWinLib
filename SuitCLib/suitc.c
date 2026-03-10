@@ -13,23 +13,25 @@
 
 #include "header.h"
 
-int noOfOptimumDetails;
-bool outputEnabled;
-
-void output_add(char* output, char* s)
+void output_add(char* output, const char* s)
 {
     if (!outputEnabled)
     {
         return;
     };
-    strncat(output, s, JSON_BUFFER_SIZE);
+    size_t current_len = strlen(output);
+    size_t extra_len = strlen(s);
+    if (JSON_BUFFER_SIZE > (current_len + extra_len)) {
+        strncat(output, s, JSON_BUFFER_SIZE);
+    }
+
 }
 
-void output_error(char* output, char* error)
+void output_error(char* output, const char* error)
 {
-    output_add(output, "\"Error\":\"");
+    output_add(output, ",\n\"Error\":\"");
     output_add(output, error);
-    output_add(output, "\"}}");
+    output_add(output, "\"}");
 }
 
 
@@ -39,10 +41,6 @@ void release_memory()
     if (savewnode0 != NULL) free(savewnode0);
     if (savenextquirkd != NULL) free(savenextquirkd);
     if (savenextquirkh != NULL) free(savenextquirkh);
-    if (savetricks != NULL) free(savetricks);
-    
-    if (savescore != NULL) free(savescore);
-    if (saveresults != NULL) free(saveresults);
 
 }
 
@@ -52,88 +50,84 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     noOfOptimumDetails = 0;
 
 
-    output_add(output, "{\"SuitCAnalysis\":{");
-    //output_error(output, "Test without analysing");
-    //return -1;
-
+    output_add(output, "{\"SuitCAnalysis\":\n{");
     savenextindex = NULL;
     savewnode0 = NULL;
     savenextquirkd = NULL;
     savenextquirkh = NULL;
-    savetricks = NULL;
-
-    savescore = NULL;
-    saveresults = NULL;
 
     int           i = 0, d = 0, p = 0;
-    double        times[4];
     char          str[100];
 
     //  set defaults and initial values
     buildtree = 0;
-    compacttree = YES;
-    cutoff = 0;
+    cutoff = SUITCAPP ? CUTOFF : 0;
     defence = NO;
     eastfixed = RENONCE;
     eastvac = NCARDS;
-    keepewequal = YES;
-    keepewweak = YES;
-    keepnsequal = YES;
-    keepnsweak = YES;
+    ewwinners = NO;
     leader = noplayer;
     matchpoint = NO;
+    matchpointtime = NO;
     maxnodes = 16000;
     ncardsmin[east] = 0;
     ncardsmin[west] = 0;
-    for ( p = 0; p < 4; p++ )
+    for (p = 0; p < 4; p++)
         nfree[0][p] = NCARDS;
-    for ( p = 0; p < 4; p++ )
+    for (p = 0; p < 4; p++)
         nruff[0][p] = 0;
     opening_lead = 0x7fff;
+    printallmatchpoint = NO;
     printallresults = NO;
     printboards = NO;
     printfulltree = NO;
+    printhighcard = NO;
     printoption = 2;
+    printscard = SUITCAPP ? YES : NO;
     printsummary = NO;
     printtrunctree = NO;
-    mergeselect = 0x1 | 0x4;
+    foldselect = SUITCAPP ? 0x5 : 0x7;
     nrules = 0;
-    reorder = NO;
+    reorder = SUITCAPP ? NO : YES;
     resultsonly = NO;
-    sortplays = NO;
-    for ( d = 0; d <= NPLIES; d++ ) {
-        st[d].ld = ( d & 3 ) == 1;
-        st[d].t = ( d + 3 ) / 4;
-    }
-    throwin = noplayer;
+    usesuitentries = NO;
     trace = 0x0;
     tricklimit = NCARDS;
-    for ( d = 0; d < NPLIES+2; d++ )
-        quirkd[d].ic = boardcount;
-    w[0] = noplayer;
+    for (d = 0; d < NPLIES + 1; d++)
+        quirkdl[d].ic = boardcount;
     westfixed = RENONCE;
     westvac = NCARDS;
     zermelo = 1;
+    nplayedtricks = 0;
+    for (p = 0; p < 4; p++)
+        brd[0][p] = RENONCE;
 
     //  process the command line
-    process_args( argc, argv );
+    if (process_args(argc, argv) != 0) {
+        fprintf(stderr, "Usage: program [options] Leader[filename]\n");
+        output_error(output, "Usage: program [options] Leader[filename]\n");
+        return -1;
+    }
 
     //  initialize the INDEX list
     icount = 0;
     icountmax = 0;
-    nextindex = malloc( 12000000 * sizeof( struct INDEX ) );
+    nextindex = (struct INDEX *) malloc(NINDICES * sizeof(struct INDEX));
     savenextindex = nextindex;
-    if ( ! nextindex ) {
+    if (!nextindex) {
+        printf("The memory assignment for the INDEX entries failed\n");
         output_error(output, "The memory assignment for the INDEX entries failed");
         release_memory();
         return -1;
     }
+
     //  initialize the NODE tree
     ncount = 1;
     ncountmax = 1;
-    wnode[0] = malloc( 8000000 * sizeof( struct NODE ) );
+    wnode[0] = (struct NODE *) malloc(NNODES * sizeof(struct NODE));
     savewnode0 = wnode[0];
-    if ( ! wnode[0] ) {
+    if (!wnode[0]) {
+        printf("The memory assignment for the NODE entries failed\n");
         output_error(output, "The memory assignment for the NODE entries failed");
         release_memory();
         return -1;
@@ -142,29 +136,42 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     nextnode++;
 
     //  create the boards
-    create_boards(output);
-    //  build the tree
-    ns[0] = defence ? tricklimit : 0;
-    create_tricks( 1 );
-
-    //  print the tree
-    if ( printtrunctree ) {
-        printf( "\n\nThe truncated NODE tree\n" );
-        printf(   "=======================\n" );
-        int dummy;
-        print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy );
-        printf( "\n\n\n" );
-        fflush( stdout );
+    if (create_boards(output) != 0) {
+        return -1;
     }
 
-    times[0] = TICK * clock();
+    //  apply played tricks (filter boards, restricted choice)
+    if (nplayedtricks > 0) {
+        if (apply_played_tricks(output) != 0) {
+            release_memory();
+            return -1;
+        }
+    }
 
+    //  build the tree
+    if (create_tricks(1) != 0) {
+        return -1;
+    }
+
+    //  print the tree
+    if (printtrunctree) {
+        if (!SUITCAPP) printf("\n\nThe truncated NODE tree\n");
+        if (!SUITCAPP) printf("=======================\n");
+        int dummy;
+        print_tree(optimumdetails, false, 1, NPLIES, wnode[0]->d, YES, YES, NULL, &dummy);
+
+        if (!SUITCAPP) printf("\n\n\n");
+        fflush(stdout);
+    }
+
+    stats[0] = TICK * clock();
     //  initialise the QUIRKD list
     qdcount = 0;
     qdcountmax = 0;
-    nextquirkd = malloc( 2 * NPLAYS * sizeof( struct QUIRKD ) );
+    nextquirkd = (struct QUIRKD *)malloc(2 * NQUIRKS * sizeof(struct QUIRKD));
     savenextquirkd = nextquirkd;
-    if ( ! nextquirkd ) {
+    if (!nextquirkd) {
+        printf("The memory assignment for the QUIRKD entries failed\n");
         output_error(output, "The memory assignment for the QUIRKD entries failed");
         release_memory();
         return -1;
@@ -173,112 +180,96 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     //  initialise the QUIRKH and TRICKS lists
     qhcount = 0;
     qhcountmax = 0;
-    nextquirkh = malloc( NPLAYS * sizeof( struct QUIRKH ) );
+    nextquirkh = (struct QUIRKH *) malloc(NQUIRKS * sizeof(struct QUIRKH));
     savenextquirkh = nextquirkh;
-    if ( ! nextquirkh ) {
-        output_error(output, "The memory assignment for the TRICKS entries failed");
-        release_memory();
-        return -1;
-    }
-    tricks = malloc( (long) boardcount * NPLAYS * sizeof( struct TRICKS ) );
-    savetricks = tricks;
-    if ( ! tricks ) {
-        output_error(output, "The memory assignment for the TRICKS entries failed");
+    if (!nextquirkh) {
+        printf("The memory assignment for the QUIRKH entries failed\n");
+        output_error(output, "The memory assignment for the QUIRKH entries failed");
         release_memory();
         return -1;
     }
 
     //  build the quirk tree
-    if ( sortplays ) {
-        count_plays();
-        sort_plays();
-    }
     convert_tree_to_quirk();
 
     //  determine best_result, the minimum and maximum number of tricks and the number of plays
     nplays = evaluate_best_results();
 
-    //output_error(output, "Exit suitc_main after evaluate_best_results");
-    //return 0;
-
-    if (trace & 0x1) {
-        if (defence) {
+    if (!SUITCAPP) {
+        if (ewwinners) {
             printf("\tmin number of losers: %d\n", tricklimit - maxns);
             printf("\tmax number of losers: %d\n", tricklimit - minns);
         }
         else {
             printf("\tmin number of tricks: %d\n", minns);
             printf("\tmax number of tricks: %d\n", maxns);
-
-            sprintf(str, "\"MinTricks\":%d,", minns);
-            output_add(output, str);
-
-            sprintf(str, "\"MaxTricks\":%d,", maxns);
-            output_add(output, str);
         }
         printf("\tnumber of plays     : %d\n", nplays);
-
-        sprintf(str, "\"Plays\":%d,", nplays);
-        output_add(output, str);
     }
 
-    //  restrict the number of plays for the matchpoint analysis
-    if ( matchpoint && nplays > maxnodes )
+    //  restrict the number of plays for the MP or IMP analysis
+    if (matchpoint && nplays > maxnodes)
         limit_matchpoint_nodes();
 
-    if (trace & 0x1)
-        printf( "\n\tCopyright 2020, Gerrit A. van der Velde, Leiden\n" );
+    if (!SUITCAPP) {
+        printf("\n\tCopyright 2025, Gerrit A. van der Velde, Leiden\n");
 
-    if ( sortplays )
-        print_play_count();
+        printf("\n\n\nThe optimal results\n");
+        printf("===================\n\n");
+    }
 
-    printf( "\n\n\nThe optimal results\n" );
-    printf(   "===================\n\n" );
-
-    output_add(output, "\"OptimalResults\":[");
-
-    if ( defence ) {
-        for ( i = maxns - 1; i >= minns; i-- )
-            printf( "\t%d losers: %8.4f\n", tricklimit - i, 100.0 * best_result.tricks[i] );
-        printf( "\tResult  : %8.4f\n", tricklimit - best_result.result + EPS );
+    output_add(output, "\"OptimalResults\":[\n");
+    if (ewwinners) {
+        for (i = maxns - 1; i >= minns; i--) {
+            if (!SUITCAPP) printf("\t%d losers: %8.4f\n", tricklimit - i, 100.0 * best_result.tricks[i]);
+            sprintf(str, "{\"Tricks\":%d,\"Percentage\":%0.4f}\n", i, 100.0 * best_result.tricks[i]);
+            output_add(output, str);
+        }
+        if (!SUITCAPP) printf("\tResult  : %8.4f\n", tricklimit - best_result.result + EPS);
+        sprintf(str, "],\"Result\":%0.4f,", best_result.result);
+        output_add(output, str);
     }
     else {
         int iter = 0;
         for (i = maxns; i > minns; i--)
         {
-            printf("\t%d tricks: %8.4f\n", i, 100.0 * best_result.tricks[i]);
+            if (!SUITCAPP) printf("\t%d tricks: %8.4f\n", i, 100.0 * best_result.tricks[i]);
 
             if (iter > 0)
             {
                 output_add(output, ",");
             }
-            sprintf(str, "{\"Tricks\":%d,\"Percentage\":%0.4f}", i, 100.0 * best_result.tricks[i]);
+            sprintf(str, "{\"Tricks\":%d,\"Percentage\":%0.4f}\n", i, 100.0 * best_result.tricks[i]);
             output_add(output, str);
             iter++;
 
         }
 
-        printf( "\tResult  : %8.4f\n", best_result.result );
-        
+        if (!SUITCAPP) printf("\tResult  : %8.4f\n", best_result.result);
         sprintf(str, "],\"Result\":%0.4f,", best_result.result);
         output_add(output, str);
     }
-    
-    //  print a summary of the results
-    if ( printsummary )
+
+    // print a summary of the results
+    // printf("print_summary");
+    if (printsummary)
         print_summary_results();
+    if (printboards)
+        print_boards();
 
-    times[1] = TICK * clock();
+    stats[1] = TICK * clock();
 
-    //  evaluate the matchpoint plays
-    if ( matchpoint ) {
+    //  evaluate the MP or IMP plays
+    if (matchpoint) {
         evaluate_mp_scores();
-        evaluate_mp_results();
+        if (evaluate_mp_results() != 0) {
+            return -1;
+        };
     }
 
-    times[2] = TICK * clock();
+    stats[2] = TICK * clock();
 
-    if ( ! resultsonly ) {
+    if (!resultsonly) {
 
         //  rebuild the full game tree
         icount = boardcount;
@@ -287,46 +278,33 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         ncountmax = 1;
         nextnode = wnode[0] + 1;
         buildtree = 1;
-        create_tricks( 1 );
+        if (create_tricks(1) != 0) {
+            return -1;
+        }
 
         //  print the tree
-        if ( printfulltree ) {
-            printf( "\n\n\nThe full NODE tree\n" );
-            printf(   "==================\n" );
+        if (printfulltree) {
+            if (!SUITCAPP) printf("\n\n\nThe full NODE tree\n");
+            if (!SUITCAPP) printf("==================\n");
             int dummy;
-            print_tree(optimumdetails, false, 0, wnode[0], YES, YES, NULL, &dummy );
-            fflush( stdout );
+            print_tree(optimumdetails, false, 1, NPLIES, wnode[0]->d, YES, YES, NULL, &dummy);
+            fflush(stdout);
         }
     }
 
     //  print the results
     buildtree = 2;
+    //printf("print_all_results\n");
     print_all_results(output, optimumdetails);
+    stats[3] = TICK * clock();
+    //print_stat(trace);
+    //printf("\n\n\n\n");
 
-    times[3] = TICK * clock();
-
-    if ( trace & 0x1 ) {
-        printf( "\n\n\n\tCounter        Maxvalue    Memory\n\t-------        --------    ------\n" );
-        printf( "\tindexcount%13d%10.1f\n", icountmax, icountmax * sizeof( struct INDEX ) / 1048576. );
-        printf( "\tnodecount%14d%10.1f\n", ncountmax, ncountmax * sizeof( struct NODE ) / 1048576. );
-        printf( "\tquirkdcount%12d%10.1f\n", qdcountmax, qdcountmax * sizeof( struct QUIRKD ) / 1048576. );
-        printf( "\tquirkhcount%12d%10.1f\n", qhcountmax, qhcountmax * sizeof( struct QUIRKH ) / 1048576. );
-        printf( "\ttrickscount%12d%10.1f\n", qhcountmax, (long) qhcountmax * boardcount * sizeof( struct TRICKS ) / 1048576. );
-        printf( "\n\tEvent                              Time\n" );
-        printf( "\t--------------------------         ----\n" );
-        printf( "\tThe tree is created        %12.3f\n", times[0] );
-        printf( "\tThe quirk tree is build    %12.3f\n", times[1] );
-        printf( "\tThe MP plays are evaluated %12.3f\n", times[2] );
-        printf( "\tThe program is finished    %12.3f\n", times[3] );
-    }
-
-    printf( "\n\n\n\n" );
-
-    //output_add(output, "}}");
     output_error(output, "No errors");
+    output_add(output, "]}}");
 
     release_memory();
 
     return 0;
-    //exit( 0 );
+
 }

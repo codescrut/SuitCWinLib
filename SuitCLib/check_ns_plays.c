@@ -8,25 +8,25 @@
 //      d               in      the depth in the NODE tree
 //      lnode           in      the NODE tree
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void check_ns_plays( int d, struct NODE **lnode )
+void check_ns_plays(int d, struct NODE** lnode)
 {
     int          bstrong, bweak, lstrong, lweak;
-    struct NODE  *bnode[NPLIES+1];
-    struct INDEX *lindex, *bindex;
+    struct NODE* bnode[NPLIES + 1];
+    struct INDEX* lindex, * bindex;
 
     //  compare all siblings
-    bnode[d-1] = lnode[d-1];
-    lnode[d] = lnode[d-1]->d;
+    bnode[d - 1] = lnode[d - 1];
+    lnode[d] = lnode[d - 1]->d;
 next_lnode:
-    while ( lnode[d] ) {
+    while (lnode[d]) {
         bnode[d] = lnode[d]->r;
 
     next_bnode:
-        while ( bnode[d] ) {
+        while (bnode[d]) {
 
             //  initialise
             bstrong = YES;
@@ -37,15 +37,15 @@ next_lnode:
             //  compare the result for all EW distributions
             lindex = lnode[d]->i;
             bindex = bnode[d]->i;
-            while( lindex ) {
+            while (lindex) {
 
                 //  mark plays that are worse than the minimum that can be won
-                if ( buildtree == 2 && bindex->max < nstricks[lindex->i] ) {
-                    bnode[d] = delete_tree( d, bnode );
+                if (buildtree == 2 && bindex->max < nstricks[lindex->i]) {
+                    bnode[d] = delete_tree(d, bnode);
                     goto next_bnode;
                 }
-                if ( buildtree == 2 && lindex->max < nstricks[lindex->i] ) {
-                    lnode[d] = delete_tree( d, lnode );
+                if (buildtree == 2 && lindex->max < nstricks[lindex->i]) {
+                    lnode[d] = delete_tree(d, lnode);
                     goto next_lnode;
                 }
 
@@ -60,30 +60,30 @@ next_lnode:
             }
 
             //  select the plays
-            if ( lstrong )
-                bnode[d] = delete_tree( d, bnode );
+            if (lstrong)
+                bnode[d] = delete_tree(d, bnode);
 
-            else if ( bstrong ) {
-                lnode[d] = delete_tree( d, lnode );
+            else if (bstrong) {
+                lnode[d] = delete_tree(d, lnode);
                 goto next_lnode;
             }
 
-            else if ( bweak && lweak && keepnsequal && buildtree )
+            else if (bweak && lweak && buildtree)
                 bnode[d] = bnode[d]->r;
 
-            else if ( bweak && lweak ) {
-                lnode[d] = delete_tree( d, lnode );
+            else if (bweak && lweak) {
+                lnode[d] = delete_tree(d, lnode);
                 goto next_lnode;
             }
 
-            else if ( ( lweak || bweak ) && keepnsweak && buildtree )
+            else if ((lweak || bweak) && buildtree)
                 bnode[d] = bnode[d]->r;
 
-            else if ( lweak )
-                bnode[d] = delete_tree( d, bnode );
+            else if (lweak)
+                bnode[d] = delete_tree(d, bnode);
 
-            else if ( bweak ) {
-                lnode[d] = delete_tree( d, lnode );
+            else if (bweak) {
+                lnode[d] = delete_tree(d, lnode);
                 goto next_lnode;
             }
 
@@ -94,5 +94,5 @@ next_lnode:
         lnode[d] = lnode[d]->r;
     }
 
-    determine_trick_count( d, lnode );
+    determine_trick_count(d, lnode);
 }

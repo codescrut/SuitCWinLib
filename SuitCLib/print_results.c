@@ -2,19 +2,19 @@
 //      print_results
 //
 //  purpose:
-//      print_results prints the results of the siblings at play=1
+//      print_results prints the results of the currently selected play
 //
 //  parameters:
 //      best_MAX        in      indicator for MAX
 //      best_MP         in      indicator for MATCHPOINT
 //      best_N          in      indicator for N tricks
-//      mpscore         in      the matchpoint score of this play
+//      mpscore         in      the MP or IMP score of this play
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void optimum_output_add(char* optimumdetails, char* str, bool add)
+void optimum_output_add(char* optimumdetails, const char* str, bool add)
 {
     if (!add)
     {
@@ -23,7 +23,7 @@ void optimum_output_add(char* optimumdetails, char* str, bool add)
     output_add(optimumdetails, str);
 }
 
-void output_add_optimum(char* output, bool* firstOptimum, char* str)
+void output_add_optimum(char* output, bool* firstOptimum, const char* str)
 {
     if (*firstOptimum)
     {
@@ -36,18 +36,17 @@ void output_add_optimum(char* output, bool* firstOptimum, char* str)
     output_add(output, str);
 }
 
-void print_results(char* output, char* optimumdetails, bool addJsonOptimumDetails, bool* firstOutput, int best_MAX, int best_MP, int *best_N, double mpscore )
+void print_results(char* output, char* optimumdetails, bool addJsonOptimumDetails, bool* firstOutput, int best_MAX, int best_MP, int* best_N, double mpscore)
 {
     int          i, n;
-    double       result, perc[NCARDS+1];
-    struct SCORE *lscore;
+    double       result, perc[NCARDS + 1];
     char          str[100];
 
     result = 0.0;
-    for ( i = minns; i <= maxns; i++ )
+    for (i = minns; i <= maxns; i++)
         perc[i] = 0.0;
 
-    for ( n = 0; n < boardcount; n++ ) {
+    for (n = 0; n < boardcount; n++) {
         perc[nstricks[n]] += dupl[n] * prob[n];
         result += dupl[n] * prob[n] * nstricks[n];
     }
@@ -58,105 +57,126 @@ void print_results(char* output, char* optimumdetails, bool addJsonOptimumDetail
     }
     else
     {
-        output_add(output, ",");
+        output_add(output, "},");
     }
-    output_add(output, "{\"OptimumPlayFor\":\"");
+    output_add(output, "\n{\"OptimumPlayFor\":\n\"");
 
     bool firstOptimum = true;
-    printf( "\n\n\nThe optimum play for:" );
+
+    if (!SUITCAPP) printf("\n\n\nThe optimum play for:");
     optimum_output_add(optimumdetails, "\n\n\nThe optimum play for:", addJsonOptimumDetails);
-    if ( best_MAX ) {
-        if (defence)
+    if (best_MAX) {
+        if (ewwinners)
         {
-            printf(" MIN");
+            if (!SUITCAPP) printf(" MIN");
             optimum_output_add(optimumdetails, " MIN", addJsonOptimumDetails);
             output_add_optimum(output, &firstOptimum, "MIN");
         }
         else
         {
-            printf(" MAX");
+            if (!SUITCAPP) printf(" MAX");
             optimum_output_add(optimumdetails, " MAX", addJsonOptimumDetails);
             output_add_optimum(output, &firstOptimum, "MAX");
         }
     }
     if (matchpoint && best_MP)
     {
-        printf(" MP");
+        if (!SUITCAPP) printf(" %s", matchpoint == IMP ? "IMP" : "MP");
         optimum_output_add(optimumdetails, " MP", addJsonOptimumDetails);
         output_add_optimum(output, &firstOptimum, "MP");
     }
-    if ( defence ) {
-        for ( i = maxns - 1; i >= minns; i-- )
+    if (ewwinners) {
+        for (i = maxns - 1; i >= minns; i--)
             if (best_N[i])
             {
-                printf(" L%d", tricklimit - i);
+                if (!SUITCAPP) printf(" L%d", tricklimit - i);
                 sprintf(str, "L%d", tricklimit - i);
                 optimum_output_add(optimumdetails, " ", addJsonOptimumDetails);
                 optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
                 output_add_optimum(output, &firstOptimum, str);
             }
+
     }
-    else {
-        for ( i = minns + 1; i <= maxns; i++ )
+    else if (defence) {
+        for (i = minns + 1; i <= maxns; i++)
             if (best_N[i])
             {
-                printf(" N%d", i);
+                if (!SUITCAPP) printf(" S%d", i);
+                sprintf(str, "S%d", i);
+                optimum_output_add(optimumdetails, " ", addJsonOptimumDetails);
+                optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
+                output_add_optimum(output, &firstOptimum, str);
+
+            }
+    }
+    else {
+        for (i = minns + 1; i <= maxns; i++)
+            if (best_N[i])
+            {
+                if (!SUITCAPP) printf(" N%d", i);
                 sprintf(str, "N%d", i);
                 optimum_output_add(optimumdetails, " ", addJsonOptimumDetails);
                 optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
                 output_add_optimum(output, &firstOptimum, str);
             }
     }
-    printf( "\n=====================" );
+    if (!SUITCAPP) printf("\n=====================");
     optimum_output_add(optimumdetails, "\n=====================", addJsonOptimumDetails);
     if (best_MAX)
     {
-        printf("====");
+        if (!SUITCAPP) printf("====");
         optimum_output_add(optimumdetails, "====", addJsonOptimumDetails);
     }
     if (matchpoint && best_MP)
     {
-        printf("===");
+        if (!SUITCAPP) printf("===");
         optimum_output_add(optimumdetails, "===", addJsonOptimumDetails);
     }
-    if ( defence ) {
-        for ( i = maxns - 1; i >= minns; i-- )
-            if (best_N[i])
-            {
-                printf("===");
+    if (ewwinners) {
+        for (i = maxns - 1; i >= minns; i--) {
+            if (best_N[i]) {
+                if (!SUITCAPP) printf("===");
+                if (tricklimit - i >= 10)
+                    printf("=");
                 optimum_output_add(optimumdetails, "===", addJsonOptimumDetails);
             }
+        }
     }
     else {
-        for ( i = minns + 1; i <= maxns; i++ )
-            if (best_N[i])
+        for (i = minns + 1; i <= maxns; i++) {
+            if (best_N[i]) 
             {
-                printf("===");
+                if (!SUITCAPP) printf("===");
+                if (i >= 10)
+                    if (!SUITCAPP) printf("=");
                 optimum_output_add(optimumdetails, "===", addJsonOptimumDetails);
             }
+        }
     }
-    printf( "\n\n" );
+    if (!SUITCAPP) printf("\n\n");
     optimum_output_add(optimumdetails, "\n\n", addJsonOptimumDetails);
     output_add(output, "\",");
 
 
-    if ( defence ) {
-        for ( i = maxns; i >= minns; i-- )
+    if (ewwinners) {
+        for (i = maxns; i >= minns; i--)
             if (perc[i] < 1.0 - EPS)
-            {
                 printf("\t%d losers: %8.4f\n", tricklimit - i, 100.0 * perc[i]);
-            }
+        printf("\tResult  : %8.4f\n", tricklimit - result + EPS);
+        sprintf(str, "    Result  : %8.4f\n", result);
+        optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
 
-        printf( "\tResult  : %8.4f\n", tricklimit - result + EPS );
+        sprintf(str, "],\n\"Result\":%0.4f\n", result);
+        output_add(output, str);
     }
     else {
         output_add(output, "\"Plays\":[");
-        
+
         bool first = true;
         for (i = maxns; i >= minns; i--)
             if (perc[i] > EPS)
             {
-                printf("\t%d tricks: %8.4f\n", i, 100.0 * perc[i]);
+                if (!SUITCAPP) printf("\t%d tricks: %8.4f\n", i, 100.0 * perc[i]);
                 sprintf(str, "\t%d tricks: %8.4f\n", i, 100.0 * perc[i]);
                 optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
                 if (first)
@@ -170,19 +190,21 @@ void print_results(char* output, char* optimumdetails, bool addJsonOptimumDetail
                 sprintf(str, "{\"Tricks\":%d,\"Percentage\":%0.4f}", i, 100.0 * perc[i]);
                 output_add(output, str);
             }
-        printf( "\tResult  : %8.4f\n", result );
-        sprintf(str, "    Result  : %8.4f\n", result);
+        if (!SUITCAPP) printf("\tResult  : %8.4f\n", result);
+        sprintf(str, "\tResult  : %8.4f\n", result);
         optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
 
-        sprintf(str, "],\"Result\":%0.4f\n", result);
+        sprintf(str, "],\n\"Result\":%0.4f\n", result);
         output_add(output, str);
+
     }
 
-    //  print the MP score
-    if (matchpoint && best_MAX && !best_MP)
+    //  print the IMP or MP score
+    if (matchpoint && ((best_MAX && best_MP) == NO || printallmatchpoint))
     {
-        printf("\tMP-score: %8.4f\n", 100.0 * mpscore + EPS);
+        if (!SUITCAPP) printf("\t%sscore: %8.4f\n", matchpoint == IMP ? "IMP" : "MP-", mpscore + EPS);
         sprintf(str, "    MP-score: %8.4f\n", 100.0 * mpscore + EPS);
         optimum_output_add(optimumdetails, str, addJsonOptimumDetails);
     }
+
 }

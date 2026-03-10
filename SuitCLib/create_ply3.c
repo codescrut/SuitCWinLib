@@ -8,50 +8,47 @@
 //      d               in      the depth in the tree
 //      p               in      the player of this ply
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void create_ply3( int d, int p )
+int create_ply3(int d, int p)
 {
-    int          i, n, t = st[d].t;
+    int          i, n, t = (d + 3) / 4;
     struct NODE  znode;
-    struct SCARD *tc;
 
     wnode[d] = &znode;
     znode.r = NIL;
-    tc = &scards[t][p];
-    for ( i = 0; i <= tc->m; i++ ) {
-
-        st[d].c = tc->c[i];
-        st[d].w = st[d-1].winc > tc->c[i] ? st[d-1].w : p;
-        st[d].winc = st[d-1].winc > tc->c[i] ? st[d-1].winc : tc->c[i];
+    for (i = 0; i <= scards[t][p].m; i++) {
 
         //  check for selected third hand strategies in trick one
-        if ( d == 3 && nrules )
-            for ( n = 0; n < nrules; n++ )
-                if ( wnode[d-1]->c & h2rule[n] && ! ( st[d].c & h3rule[n] ) )
+        if (d == 3 && nrules)
+            for (n = 0; n < nrules; n++)
+                if (wnode[d - 1]->c & h2rule[n] && !(scards[t][p].c[i] & h3rule[n]))
                     goto next_i;
 
         //  create a new node
-        if ( ! add_node( d, p, tc->c[i] ) )
+        if (!add_node(d, p, scards[t][p].c[i]))
             continue;
 
         //  handle the 4th hand play
-        create_ply4( d+1, (p+1)%4 );
+        if (create_ply4(d + 1, (p + 1) % 4) != 0) {
+            return -1;
+        };
 
     next_i:
         continue;
     }
 
     //  check for errors in the specification of the third hand strategy
-    if ( nrules && ! znode.r ) {
-        printf( "ERROR: The third hand strategy is incorrectly specified\n" );
-        exit( 1 );
+    if (nrules && !znode.r) {
+        printf("ERROR: The third hand strategy is incorrectly specified\n");
+        return -1;
     }
 
     //  check the plays
     znode.r->l = NIL;
-    wnode[d-1]->d = znode.r;
-    NS(znode.r->p) ? check_ns_plays( d, wnode ) : check_ew_plays( d, wnode );
+    wnode[d - 1]->d = znode.r;
+    NS(znode.r->p) ? check_ns_plays(d, wnode) : check_ew_plays(d, wnode);
+    return 0;
 }

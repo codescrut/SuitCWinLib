@@ -1,0 +1,76 @@
+//  name:
+//      print_quirk
+//
+//  purpose:
+//      print_quirk prints a QUIRK tree
+//
+//  parameters:
+//      rootqdl         in      the left sibling of the root of the QUIRK tree
+//      ident           in      identification string
+//
+//  Copyright 2025, Gerrit A. van der Velde, Leiden
+
+#include "header.h"
+#include <ctype.h>
+
+void print_quirk(struct QUIRKD* rootqdl, char* ident)
+{
+    int           i, l = 0, o = 0;
+    char          out[2 * NBOARDS + 1];
+    struct QUIRKD* lquirkd[NBOARDS + 1];
+    struct TRICKS* t;
+
+    if (rootqdl->h)
+        printf("\nrootqdl->h=%lx", (unsigned long)rootqdl->h);
+    else {
+        printf("\nrootqdl->h=%lx ident=%s\n", (unsigned long)rootqdl->h, ident);
+        return;
+    }
+
+    printf(" rootqdl->h->d=%p", rootqdl->h->d);
+    printf(" ident=%s\n", ident);
+    fflush(stdout);
+
+    t = rootqdl->h->t;
+    lquirkd[l] = rootqdl->h->d;
+
+    while (lquirkd[l]) {
+
+        for (i = lquirkd[l]->il; i <= lquirkd[l]->ih; i++) {
+            while (o < 2 * t[i].i) {
+                out[o++] = ' ';
+                out[o++] = '-';
+            }
+            out[o++] = ' ';
+            sprintf(&out[o++], "%x", t[i].ns);
+        }
+
+        if (lquirkd[l]->d) {
+            l++;
+            lquirkd[l] = lquirkd[l - 1]->d;
+        }
+
+        else {
+
+            out[o] = '\0';
+            printf("%s\n", out);
+
+            while (l && lquirkd[l]->h == NIL)
+                l--;
+
+            if (l == 0 && lquirkd[l]->h == NIL)
+                return;
+
+            o = 0;
+            t = lquirkd[l]->h->t;
+            lquirkd[l] = lquirkd[l]->h->d;
+            i = lquirkd[l]->il;
+            if (BLANK) {
+                while (o < 2 * t[i].i) {
+                    out[o++] = ' ';
+                    out[o++] = ' ';
+                }
+            }
+        }
+    }
+}

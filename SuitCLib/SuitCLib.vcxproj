@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -126,10 +126,11 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;SUITCLIB_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;SUITCLIB_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;SUITCAPP=YES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>4703</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,10 +144,13 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;SUITCLIB_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;SUITCLIB_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;SUITCAPP=YES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,25 +167,27 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bump_codes.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="header.h" />
     <ClInclude Include="lib_main.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="add_node.c" />
-    <ClCompile Include="add_quirkd.c" />
+    <ClCompile Include="add_quirk.c" />
+    <ClCompile Include="apply_played_tricks.c" />
     <ClCompile Include="build_selected_tree.c" />
     <ClCompile Include="check_ew_plays.c" />
     <ClCompile Include="check_ns_plays.c" />
     <ClCompile Include="check_quirkd.c" />
     <ClCompile Include="check_zermelo.c" />
-    <ClCompile Include="clean_quirkd.c" />
+    <ClCompile Include="clean_quirk.c" />
     <ClCompile Include="convert_tree_to_quirk.c" />
     <ClCompile Include="copy_node.c" />
     <ClCompile Include="copy_tree.c" />
-    <ClCompile Include="count_plays.c" />
-    <ClCompile Include="count_quirkd.c" />
+    <ClCompile Include="count_quirk.c" />
     <ClCompile Include="create_all_boards.c" />
     <ClCompile Include="create_boards.c" />
     <ClCompile Include="create_board_header.c" />
@@ -192,7 +198,7 @@
     <ClCompile Include="create_ply4.c" />
     <ClCompile Include="create_tricks.c" />
     <ClCompile Include="delete_board.c" />
-    <ClCompile Include="delete_quirkd.c" />
+    <ClCompile Include="delete_quirk.c" />
     <ClCompile Include="delete_tree.c" />
     <ClCompile Include="determine_trick_count.c" />
     <ClCompile Include="dllmain.cpp" />
@@ -201,12 +207,12 @@
     <ClCompile Include="evaluate_mp_scores.c" />
     <ClCompile Include="fold_ew_tree.c" />
     <ClCompile Include="fold_ns_tree.c" />
-    <ClCompile Include="fold_quirkd.c" />
+    <ClCompile Include="fold_tree.c" />
+    <ClCompile Include="fold_quirk.c" />
     <ClCompile Include="limit_matchpoint_nodes.c" />
-    <ClCompile Include="limit_quirkd.c" />
+    <ClCompile Include="limit_quirk.c" />
     <ClCompile Include="merge_nodes.c" />
-    <ClCompile Include="merge_quirkd.c" />
-    <ClCompile Include="merge_tree.c" />
+    <ClCompile Include="merge_quirk.c" />
     <ClCompile Include="minimax.c" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -217,17 +223,22 @@
     <ClCompile Include="print_all_results.c" />
     <ClCompile Include="print_boards.c" />
     <ClCompile Include="print_node.c" />
-    <ClCompile Include="print_play_count.c" />
-    <ClCompile Include="print_quirkd.c" />
+    <ClCompile Include="print_quirk.c" />
     <ClCompile Include="print_results.c" />
+    <ClCompile Include="print_stat.c" />
+    <ClCompile Include="print_suitc.c" />
     <ClCompile Include="print_summary_results.c" />
     <ClCompile Include="print_tree.c" />
     <ClCompile Include="process_args.c" />
     <ClCompile Include="select_ew_plays.c" />
     <ClCompile Include="select_ns_plays.c" />
-    <ClCompile Include="sort_plays.c" />
     <ClCompile Include="suitc.c" />
     <ClCompile Include="lib_main.cpp" />
+    <ClCompile Include="suitc_globals.c" />
+    <ClCompile Include="use_suit_entries.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SuitCLib.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

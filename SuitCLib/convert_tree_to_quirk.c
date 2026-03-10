@@ -2,94 +2,94 @@
 //      convert_tree_to_quirk
 //
 //  purpose:
-//      convert_tree_to_quirk converts the NODE tree to QUIRKD tree. For
-//      each terminal node it builds a QUIRKD node with calls to bump_quirkd
+//      convert_tree_to_quirk converts the NODE tree to QUIRK tree. For
+//      each terminal node it builds a QUIRK node with calls to bump_quirkd
 //      and bump_quirkh. Thereafter it combines NS nodes with calls to
-//      fold_quirkd, and EW nodes by calls to merge_quirkd.
+//      fold_quirk, and EW nodes by calls to merge_quirk.
 //
 //  parameters:
 //      none
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void convert_tree_to_quirk( void )
+void convert_tree_to_quirk(void)
 {
     int          d = 1, i;
-    struct INDEX *lindex;
+    struct INDEX* lindex;
 
     //  the tree contains no more branches
-    if ( wnode[0]->term ) {
+    if (wnode[0]->term) {
         i = -1;
-        bump_quirkh( quirkd[0].h );
-        bump_quirkd( quirkd[0].h->d );
+        bump_quirkh(quirkdl[0].h);
+        bump_quirkd(quirkdl[0].h->d);
         lindex = wnode[0]->i;
-        while ( lindex ) {
-            quirkd[0].h->t[++i].i = lindex->i;
-            quirkd[0].h->t[i].ns = lindex->max;
+        while (lindex) {
+            quirkdl[0].h->t[++i].i = lindex->i;
+            quirkdl[0].h->t[i].ns = lindex->max;
             lindex = lindex->r;
         }
-        quirkd[0].h->d->il = 0;
-        quirkd[0].h->d->ih = i;
+        quirkdl[0].h->d->il = 0;
+        quirkdl[0].h->d->ih = i;
         return;
     }
 
     //  loop over all branches of the NODE tree
-    quirkd[d-1].h = NIL;
-    wnode[d] = wnode[d-1]->d;
-    while ( wnode[d] ) {
+    quirkdl[d - 1].h = NIL;
+    wnode[d] = wnode[d - 1]->d;
+    while (wnode[d]) {
 
         //  get the oldest son
-        if ( wnode[d]->d ) {
+        if (wnode[d]->d) {
             d++;
-            quirkd[d-1].h = NIL;
-            wnode[d] = wnode[d-1]->d;
+            quirkdl[d - 1].h = NIL;
+            wnode[d] = wnode[d - 1]->d;
         }
 
         //  we reached a leaf
         else {
 
-            //  build the QUIRKD tree
+            //  build the QUIRK tree
             i = -1;
-            bump_quirkh( quirkd[d].h );
-            bump_quirkd( quirkd[d].h->d );
+            bump_quirkh(quirkdl[d].h);
+            bump_quirkd(quirkdl[d].h->d);
             lindex = wnode[d]->i;
-            while ( lindex ) {
-                quirkd[d].h->t[++i].i = lindex->i;
-                quirkd[d].h->t[i].ns = lindex->max;
+            while (lindex) {
+                quirkdl[d].h->t[++i].i = lindex->i;
+                quirkdl[d].h->t[i].ns = lindex->max;
                 lindex = lindex->r;
             }
-            quirkd[d].h->d->il = 0;
-            quirkd[d].h->d->ih = i;
+            quirkdl[d].h->d->il = 0;
+            quirkdl[d].h->d->ih = i;
 
             //  build the QUIRD tree and get the next node in the NODE tree
-            while ( YES ) {
+            while (YES) {
 
-                if ( quirkd[d-1].h == NIL )
-                    quirkd[d-1].h = quirkd[d].h;
+                if (quirkdl[d - 1].h == NIL)
+                    quirkdl[d - 1].h = quirkdl[d].h;
 
-                //  fold north-south QUIRKD trees
-                else if ( NS(wnode[d]->p) )
-                    fold_quirkd( d-1 );
+                //  fold north-south QUIRK trees
+                else if (NS(wnode[d]->p))
+                    fold_quirk(d);
 
-                //  merge east-west QUIRKD trees
-                else if ( EW(wnode[d]->p) ) {
+                //  merge east-west QUIRK trees
+                else if (EW(wnode[d]->p)) {
 
-                    //  reduce the number of branches in the QUIRKD trees
-                    if ( cutoff && d <= 4 && (long) count_quirkd( d-1 ) * (long) count_quirkd( d ) > cutoff )
-                        limit_quirkd( d-1 );
+                    //  reduce the number of branches in the QUIRK trees
+                    if (cutoff && d <= 4 && (long)count_quirk(d - 1) * (long)count_quirk(d) > cutoff)
+                        limit_quirk(d - 1);
 
-                    merge_quirkd( d-1 );
+                    merge_quirk(d);
                 }
 
-                if ( wnode[d]->r ) {
+                if (wnode[d]->r) {
                     wnode[d] = wnode[d]->r;
                     break;
                 }
 
                 d--;
-                if ( ! d )
+                if (!d)
                     return;
             }
         }

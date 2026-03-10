@@ -1,7 +1,8 @@
 #include "header.h"
+#include <ctype.h>
 
 
-void game_tree_add(char* gameTreeJsonValue, char* s)
+void game_tree_add(char* gameTreeJsonValue, const char* s)
 {
 	strncat(gameTreeJsonValue, s, 1024);
 }
@@ -14,6 +15,8 @@ void game_tree_add_char(char* gameTreeJsonValue, char c)
 
 void construct_game_tree(struct TREE_ELEMENT* treeElements, int treeElementsCount, char* gameTreeJsonValue, int* pElementNo)
 {
+	//printf("pElementNo %d\n", *pElementNo);
+
 	if (*pElementNo >= treeElementsCount)
 	{
 		return;
@@ -67,8 +70,22 @@ void construct_game_tree(struct TREE_ELEMENT* treeElements, int treeElementsCoun
 
 void create_game_tree_json_value(struct TREE_ELEMENT* treeElements, int treeElementsCount, char* gameTreeJsonValue)
 {
-	gameTreeJsonValue[0] = '\0';
+	gameTreeJsonValue[0] = '\0';  // Start with an empty string
+	strcat(gameTreeJsonValue, "[\n");  // Begin JSON array
 	int elementNo = 0;
-	construct_game_tree(treeElements, treeElementsCount, gameTreeJsonValue, &elementNo);
-}
+	for (int elementNo = 0; elementNo < treeElementsCount; elementNo++) {
+		char tempBuffer[JSON_BUFFER_SIZE];  // Temporary buffer for each element
+		tempBuffer[0] = '\0';
 
+		construct_game_tree(treeElements, treeElementsCount, gameTreeJsonValue, &elementNo);
+		elementNo--;
+
+		strcat(gameTreeJsonValue, tempBuffer);  // Append element JSON
+
+		if (elementNo < treeElementsCount - 1) {
+			strcat(gameTreeJsonValue, ",\n");  // Add comma **only if not the last element**
+		}
+	}
+
+	strcat(gameTreeJsonValue, "]\n");  // Close JSON array
+}

@@ -6,56 +6,56 @@
 //
 //  parameters:
 //      d               in      the depth in the tree
-//      lead[4]         in      flag to indicate valid leads
+//      lead            in      flag to indicate valid leads
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void create_ply1( int d, int lead[4] )
+int create_ply1(int d, int* lead)
 {
-    int          i, p, t = st[d].t;
+    int          i, p, t = (d + 3) / 4;
     struct NODE  znode;
-    struct SCARD *tc;
 
     wnode[d] = &znode;
     znode.r = NIL;
-    for ( p = 0; p < 4; p++ ) {
+    for (p = 0; p < 4; p++) {
 
-        if ( lead[p] ) {
+        if (lead[p]) {
 
             //  adjust the number of free entries
-            nfree[t][west] = nfree[t-1][west];
-            nfree[t][east] = nfree[t-1][east];
-            nfree[t][north] = nfree[t-1][north];
-            nfree[t][south] = nfree[t-1][south];
-            if ( ( t > 1 ) && ( w[t-1] != p ) )
+            nfree[t][west] = nfree[t - 1][west];
+            nfree[t][east] = nfree[t - 1][east];
+            nfree[t][north] = nfree[t - 1][north];
+            nfree[t][south] = nfree[t - 1][south];
+            if (t > 1 && wnode[d - 1]->w_p != p)
                 nfree[t][p] -= 1;
 
             //  investigate all SCARD sequences
-            tc = &scards[t][p];
-            for ( i = 0; i <= tc->n; i++ ) {
-
-                st[d].c = tc->c[i];
-                st[d].w = p;
-                st[d].winc = tc->c[i];
+            for (i = 0; i <= scards[t][p].n; i++) {
 
                 //  check for a specified opening lead
-                if ( t == 1 && leader == p && ! ( st[d].c & opening_lead ) )
+                if (t == 1 && leader == p && !(scards[t][p].c[i] & opening_lead))
                     continue;
 
                 //  create a new node
-                if ( ! add_node( d, p, tc->c[i] ) )
+                if (!add_node(d, p, scards[t][p].c[i]))
                     continue;
 
+                //  mark an entry in the suit itself
+                wnode[d]->e_down |= t > 1 && wnode[d - 1]->w_p == p ? 1 << (ntricks - t) : 0;
+
                 //  handle the 2nd hand play
-                create_ply2( d+1, (p+1)%4 );
+                if (create_ply2(d + 1, (p + 1) % 4) != 0) {
+                    return -1;
+				};
             }
         }
     }
 
     //  check the plays
     znode.r->l = NIL;
-    wnode[d-1]->d = znode.r;
-    NS(znode.r->p) ? check_ns_plays( d, wnode ) : check_ew_plays( d, wnode );
+    wnode[d - 1]->d = znode.r;
+    NS(znode.r->p) ? check_ns_plays(d, wnode) : check_ew_plays(d, wnode);
+	return 0;
 }

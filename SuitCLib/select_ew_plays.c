@@ -11,10 +11,10 @@
 
 #include "header.h"
 
-#define bwinc_ew()      ( bnode[d]->winc & ( brd[0][west]  | brd[0][east]  ) )
-#define bwinc_ns()      ( bnode[d]->winc & ( brd[0][north] | brd[0][south] ) )
-#define lwinc_ew()      ( lnode[d]->winc & ( brd[0][west]  | brd[0][east]  ) )
-#define lwinc_ns()      ( lnode[d]->winc & ( brd[0][north] | brd[0][south] ) )
+#define bwinc_ew()      ( bnode[d]->w_c & ( brd[0][west]  | brd[0][east]  ) )
+#define bwinc_ns()      ( bnode[d]->w_c & ( brd[0][north] | brd[0][south] ) )
+#define lwinc_ew()      ( lnode[d]->w_c & ( brd[0][west]  | brd[0][east]  ) )
+#define lwinc_ns()      ( lnode[d]->w_c & ( brd[0][north] | brd[0][south] ) )
 
 void select_ew_plays( int d )
 {
@@ -60,10 +60,10 @@ void select_ew_plays( int d )
 
     //  determine the winning cards
     tnode[d] = tnode[d-1]->d;
-    tnode[d-1]->winc = (d-1)%4 ? RENONCE : tnode[d-1]->winc;
+    tnode[d-1]->w_c = (d-1)%4 ? RENONCE : tnode[d-1]->w_c;
     while ( tnode[d] ) {
         if ( (d-1)%4 )
-            tnode[d-1]->winc |= tnode[d]->winc;
+            tnode[d-1]->w_c |= tnode[d]->w_c;
         tnode[d] = tnode[d]->r;
     }
 }

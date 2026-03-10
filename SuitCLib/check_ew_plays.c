@@ -9,28 +9,28 @@
 //      d               in      the depth in the NODE tree
 //      lnode           in      the NODE tree
 //
-//  Copyright 2020, Gerrit A. van der Velde, Leiden
+//  Copyright 2024, Gerrit A. van der Velde, Leiden
 
 #include "header.h"
 
-void check_ew_plays( int d, struct NODE **lnode )
+void check_ew_plays(int d, struct NODE** lnode)
 {
     int          b, bstrong, bweak, lstrong, lweak, recheck;
-    struct INDEX *aindex, *bindex, *lindex, anchorb, anchorl;
-    struct NODE  *bnode[NPLIES+1];
+    struct INDEX* aindex, * bindex, * lindex, anchorb, anchorl;
+    struct NODE* bnode[NPLIES + 1];
 
-    bnode[d-1] = lnode[d-1];
+    bnode[d - 1] = lnode[d - 1];
 
 recheck_all_nodes:
     recheck = NO;
-    lnode[d] = lnode[d-1]->d;
+    lnode[d] = lnode[d - 1]->d;
 
 next_lnode:
-    while ( lnode[d] ) {
+    while (lnode[d]) {
         bnode[d] = lnode[d]->r;
 
     next_bnode:
-        while ( bnode[d] ) {
+        while (bnode[d]) {
 
             //  initialise
             anchorl.r = lnode[d]->i;
@@ -39,20 +39,20 @@ next_lnode:
             bindex = &anchorb;
 
             //  check the number of tricks on each board
-            while( lindex->r && bindex->r ) {
+            while (lindex->r && bindex->r) {
 
-                while( lindex->r && lindex->r->i < bindex->r->i )
+                while (lindex->r && lindex->r->i < bindex->r->i)
                     lindex = lindex->r;
-                if ( ! lindex->r )
+                if (!lindex->r)
                     break;
 
-                while( bindex->r && bindex->r->i < lindex->r->i )
+                while (bindex->r && bindex->r->i < lindex->r->i)
                     bindex = bindex->r;
-                if ( ! bindex->r )
+                if (!bindex->r)
                     break;
 
                 //  handle a board that occurs in both nodes
-                if ( lindex->r && bindex->r && lindex->r->i == bindex->r->i ) {
+                if (lindex->r && bindex->r && lindex->r->i == bindex->r->i) {
 
                     //  initialise
                     b = lindex->r->i;
@@ -62,38 +62,38 @@ next_lnode:
                     bweak = bindex->r->max <= lindex->r->min;
 
                     //  select the plays
-                    if ( buildtree == 2 && bindex->r->max > nstricks[b] )
+                    if (buildtree == 2 && bindex->r->max > nstricks[b])
                         goto delete_bboard;
 
-                    else if ( buildtree == 2 && lindex->r->max > nstricks[b] )
+                    else if (buildtree == 2 && lindex->r->max > nstricks[b])
                         goto delete_lboard;
 
-                    else if ( lstrong )
+                    else if (lstrong)
                         goto delete_bboard;
 
-                    else if ( bstrong )
+                    else if (bstrong)
                         goto delete_lboard;
 
-                    else if ( bweak && lweak && keepewequal && buildtree ) {
+                    else if (bweak && lweak && buildtree) {
                         lindex = lindex->r;
                         continue;
                     }
 
-                    else if ( bweak && lweak )
+                    else if (bweak && lweak)
                         goto delete_lboard;
 
-                    else if ( ( lweak || bweak ) && keepewweak && buildtree ) {
+                    else if ((lweak || bweak) && buildtree) {
                         lindex = lindex->r;
                         continue;
                     }
 
-                    else if ( lweak )
+                    else if (lweak)
                         goto delete_bboard;
 
-                    else if ( bweak )
+                    else if (bweak)
                         goto delete_lboard;
 
-                    else if ( YES ) {
+                    else if (YES) {
                         lindex = lindex->r;
                         continue;
                     }
@@ -105,16 +105,16 @@ next_lnode:
                     lindex->r = lindex->r->r;
                     lnode[d]->i = anchorl.r;
                     lindex = lindex->r;
-                    free_index( aindex );
+                    free_index(aindex);
 
                     //  handle the sons if any boards left
-                    if ( lnode[d]->i ) {
-                        delete_board( d+1, lnode, b );
-                        determine_trick_count( d+1, lnode );
+                    if (lnode[d]->i) {
+                        delete_board(d + 1, lnode, b);
+                        determine_trick_count(d + 1, lnode);
                         break;
                     }
                     else {
-                        lnode[d] = delete_tree( d, lnode );
+                        lnode[d] = delete_tree(d, lnode);
                         goto next_lnode;
                     }
 
@@ -124,16 +124,16 @@ next_lnode:
                     aindex = bindex->r;
                     bindex->r = bindex->r->r;
                     bnode[d]->i = anchorb.r;
-                    free_index( aindex );
+                    free_index(aindex);
 
                     //  handle the sons if any boards left
-                    if ( bnode[d]->i ) {
-                        delete_board( d+1, bnode, b );
-                        determine_trick_count( d+1, bnode );
+                    if (bnode[d]->i) {
+                        delete_board(d + 1, bnode, b);
+                        determine_trick_count(d + 1, bnode);
                         break;
                     }
                     else {
-                        bnode[d] = delete_tree( d, bnode );
+                        bnode[d] = delete_tree(d, bnode);
                         goto next_bnode;
                     }
                 }
@@ -145,9 +145,9 @@ next_lnode:
         lnode[d] = lnode[d]->r;
     }
 
-    if ( recheck )
+    if (recheck)
         goto recheck_all_nodes;
 
     //  determine the number of NS tricks of the parent node
-    determine_trick_count( d, lnode );
+    determine_trick_count(d, lnode);
 }
