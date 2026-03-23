@@ -197,30 +197,18 @@ int apply_played_tricks(char* output)
         for (i = 0; i < boardcount; i++)
             prob[i] /= scale;
 
-        //  Step 8: determine trick winner (only for complete tricks)
-        if (played_length[t] == 4) {
-            COLOR win_card = RENONCE;
-            int   winner = trick_leader;
-
-            for (ply = 0; ply < 4; ply++) {
-                card = played_card[t][ply];
-                if (card != DISCARD && card > win_card) {
-                    win_card = card;
-                    winner = ply_player[ply];
-                }
-            }
-            trick_leader = winner;
-        }
-        else {
-            //  partial trick: leader stays the same for now
-            //  (partial trick support is limited)
-        }
+        //  Step 8: do not change the leader based on trick winner.
+        //  The caller (BEN) already knows who is on lead and passes
+        //  the correct hand as North. The played tricks are only used
+        //  to filter boards and remove cards.
     }
 
     //  After all played tricks: update derived state
-
-    //  update leader
-    leader = trick_leader;
+    //  leader stays as originally set, but if leader has no cards left,
+    //  transfer to partner (e.g. South played all cards, North continues)
+    if (brd[0][leader] == RENONCE) {
+        leader = (leader + 2) % 4;
+    }
 
     //  clear opening lead restriction (we are past the opening)
     opening_lead = 0x7fff;

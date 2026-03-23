@@ -5,3 +5,14 @@ Example: A compiled and running example
 Note: The project should be compiled in release mode (For unknown reason the debug version is broken).
 
 Compiled and tested in VS2022
+
+Release notes
+=============
+
+0.9.0.6
+- Fix crash when leader has no cards after played tricks (transfer lead to partner)
+- Do not change leader based on trick winner; caller determines who leads
+
+0.9.0.5
+- Added played cards as command line parameter
+- Updated to latest version from Gerrit van der Velde
