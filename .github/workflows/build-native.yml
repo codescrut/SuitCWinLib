@@ -1,0 +1,72 @@
+name: Build Native Libraries
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'SuitCLib/**'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            output_dir: linux/x64
+            lib_name: libsuitc.so
+            ldflags: "-shared -fvisibility=hidden"
+          - os: ubuntu-24.04-arm
+            rid: linux-arm64
+            output_dir: linux/arm64
+            lib_name: libsuitc.so
+            ldflags: "-shared -fvisibility=hidden"
+          - os: macos-latest
+            rid: macos-arm64
+            output_dir: macos/arm64
+            lib_name: libsuitc.dylib
+            ldflags: "-dynamiclib -fvisibility=hidden"
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build shared library
+        working-directory: SuitCLib
+        run: |
+          make clean
+          make TARGET_LIB=${{ matrix.lib_name }} LDFLAGS="${{ matrix.ldflags }}" SUITCAPP=0
+
+      - name: List build output
+        working-directory: SuitCLib
+        run: ls -la ${{ matrix.lib_name }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: suitclib-${{ matrix.rid }}
+          path: SuitCLib/${{ matrix.lib_name }}
+
+  collect:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Organize
+        run: |
+          mkdir -p release/SuitC/{linux/x64,linux/arm64,macos/arm64}
+          cp artifacts/suitclib-linux-x64/* release/SuitC/linux/x64/ 2>/dev/null || true
+          cp artifacts/suitclib-linux-arm64/* release/SuitC/linux/arm64/ 2>/dev/null || true
+          cp artifacts/suitclib-macos-arm64/* release/SuitC/macos/arm64/ 2>/dev/null || true
+          find release -type f
+
+      - name: Upload combined release
+        uses: actions/upload-artifact@v4
+        with:
+          name: suitclib-all-platforms
+          path: release/SuitC/
