@@ -108,4 +108,9 @@ void limit_quirk(int d)
 
     if (!SUITCAPP) printf("\tcutoff:%8d%6d ->%8d%6d\n", nplays[0], nplays[1], count[0], count[1]);
     fflush(stdout);
+
+    //  free both `results` arrays — previously malloc'd in the loop above and
+    //  never freed. Leaked 2 * (NQUIRKS+2) * sizeof(LIMIT) per call.
+    free(results[0]);
+    free(results[1]);
 }

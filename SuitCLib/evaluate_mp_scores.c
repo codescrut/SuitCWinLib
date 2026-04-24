@@ -176,4 +176,16 @@ void evaluate_mp_scores(void)
             lquirkd[l] = lquirkdl[l]->h ? lquirkd[l]->h->d : NIL;
         }
     }
+
+    //  free allocated heap memory. Previously `score` (and each leaf's
+    //  `score[i].mp`) were malloc'd and never freed, leaking several KB of
+    //  native heap per call to evaluate_mp_scores. Since the library is called
+    //  thousands of times during cardplay analysis, this accumulated into GB
+    //  of private commit over a long session. free(NULL) is a no-op, so it is
+    //  safe to iterate every score slot regardless of whether it was a leaf.
+    for (i = 0; i < nplays + 2; i++) {
+        free(score[i].mp);
+    }
+    free(score);
+    score = NIL;
 }
