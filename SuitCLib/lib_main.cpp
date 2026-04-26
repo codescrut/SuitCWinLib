@@ -27,6 +27,12 @@ extern "C"
 }
 #include <signal.h>
 
+extern "C" EXPORT void CALLCONV
+free_memory()
+{
+	suitc_free_memory();
+}
+
 char WideToNarrowChar(wchar_t w)
 {
 	//char* chars = new char[5];

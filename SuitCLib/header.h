@@ -360,6 +360,7 @@ SUITC_API void           print_tree(char* optimumdetails, bool addJsonOptimumDet
 SUITC_API int            process_args(int argc, char** argv);
 SUITC_API void           select_ns_plays(int d_param);
 SUITC_API int            suitc_main(int argc, char** argv, char* output, char* optimumdetails);
+SUITC_API void           suitc_free_memory(void);
 SUITC_API void           use_suit_entries(void);
 
 SUITC_API void create_game_tree_json_value(struct TREE_ELEMENT* treeElements, int treeElementsCount, char* gameTreeJsonValue); // struct TREE_ELEMENT defined

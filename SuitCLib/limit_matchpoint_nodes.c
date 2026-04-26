@@ -105,8 +105,4 @@ void limit_matchpoint_nodes(void)
         printf("\t#nodes for IMP plays: %d\n", nplays);
         printf("\tcutoff for IMP plays: %6.4f\n", best_result.result - testlow); fflush(stdout);
     }
-
-    //  free `results` — previously malloc'd at function entry and never freed.
-    //  Leaked (nplays+2) * sizeof(LIMIT) per call into native heap.
-    free(results);
 }

@@ -37,11 +37,60 @@ void output_error(char* output, const char* error)
 
 void release_memory()
 {
-    if (savenextindex != NULL) free(savenextindex);
-    if (savewnode0 != NULL) free(savewnode0);
-    if (savenextquirkd != NULL) free(savenextquirkd);
-    if (savenextquirkh != NULL) free(savenextquirkh);
+    int i;
 
+    //  bump_quirkh malloc's a per-slot `t` array (boardcount * sizeof(TRICKS))
+    //  the first time each pool slot is used. Indices [0, qhcountmax) own a
+    //  `t`; [qhcountmax, NQUIRKS) do not. Free those before freeing the pool
+    //  itself, otherwise every call leaks ~boardcount * qhcountmax * 2 bytes
+    //  (measured at ~430 KB/call in the bridge service).
+    if (savenextquirkh != NULL) {
+        for (i = 0; i < qhcountmax; i++) {
+            free(savenextquirkh[i].t);
+            savenextquirkh[i].t = NIL;
+        }
+        free(savenextquirkh);
+        savenextquirkh = NIL;
+    }
+    qhcountmax = 0;
+
+    if (savenextindex != NULL) {
+        free(savenextindex);
+        savenextindex = NIL;
+    }
+    if (savewnode0 != NULL) {
+        free(savewnode0);
+        savewnode0 = NIL;
+    }
+    if (savenextquirkd != NULL) {
+        free(savenextquirkd);
+        savenextquirkd = NIL;
+    }
+
+    //  matchpoint score: also freed at the bottom of suitc_main on the normal
+    //  path (which sets `score = NIL`), so this branch is a no-op there. It
+    //  catches error returns and external suitc_free_memory() callers.
+    if (score != NIL) {
+        for (i = 0; i <= nplays; i++) {
+            free(score[i].mp);
+            score[i].mp = NIL;
+        }
+        free(score);
+        score = NIL;
+    }
+}
+
+//  Public: release all native heap held by the library and (on glibc) ask the
+//  allocator to return memory to the OS. Safe to call when no call_suitc() is
+//  in flight; the caller must serialize against call_suitc(), since SuitC has
+//  no internal locking and shares all state via globals. Idempotent.
+SUITC_API void suitc_free_memory(void)
+{
+    release_memory();
+#if defined(__GLIBC__)
+    extern int malloc_trim(size_t);
+    malloc_trim(0);
+#endif
 }
 
 int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
@@ -302,6 +351,19 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
 
     output_error(output, "No errors");
     output_add(output, "]}}");
+
+    //  release matchpoint allocations: `score` (and its per-leaf `mp`) are
+    //  malloc'd in evaluate_mp_scores and read by evaluate_mp_results and
+    //  print_all_results. Now that those have all returned, free them here
+    //  rather than at the end of evaluate_mp_scores (which would be UAF).
+    //  evaluate_mp_results may have already freed some `mp` slots and set
+    //  them to NIL; free(NULL) is a no-op so iterating every slot is safe.
+    if (matchpoint && score) {
+        for (i = 0; i <= nplays; i++)
+            free(score[i].mp);
+        free(score);
+        score = NIL;
+    }
 
     release_memory();
 
