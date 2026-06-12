@@ -27,11 +27,17 @@ void output_add(char* output, const char* s)
 
 }
 
+//  Emit a complete, self-contained error document. Called on the early-return
+//  error paths where `output` holds only the opener `{"SuitCAnalysis":\n{`,
+//  so this must NOT prepend a separator comma (there is no preceding field) and
+//  must close BOTH the inner object and the outer "SuitCAnalysis" object.
+//  The success path does not use this -- it writes its own ",\n\"Error\":...}]}}"
+//  tail inline so the comma/array-close stay correct there.
 void output_error(char* output, const char* error)
 {
-    output_add(output, ",\n\"Error\":\"");
+    output_add(output, "\n\"Error\":\"");
     output_add(output, error);
-    output_add(output, "\"}");
+    output_add(output, "\"}}");
 }
 
 
@@ -349,8 +355,10 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     //print_stat(trace);
     //printf("\n\n\n\n");
 
-    output_error(output, "No errors");
-    output_add(output, "]}}");
+    //  Success tail: close the last OptimumPlay item with the trailing "Error"
+    //  field, then close the array, inner object, and outer object. Kept inline
+    //  (not via output_error) because here a preceding field requires the comma.
+    output_add(output, ",\n\"Error\":\"No errors\"}]}}");
 
     //  release matchpoint allocations: `score` (and its per-leaf `mp`) are
     //  malloc'd in evaluate_mp_scores and read by evaluate_mp_results and
