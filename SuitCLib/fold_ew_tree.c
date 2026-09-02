@@ -18,6 +18,13 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
     int          match;
     struct NODE* tnode;
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return(NO);
+    }
+
     bnode[d] = bnode[d - 1]->d;
     lnode[d] = lnode[d - 1]->d;
     if (!(lnode[d] && bnode[d]))
@@ -33,7 +40,7 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
 
             //  both branches make the same play, so fold both trees
             if (lnode[d]->p == bnode[d]->p && lnode[d]->c == bnode[d]->c) {
-                if (!bnode[d]->d || fold_ew_tree(d + 1, lnode, bnode)) {
+                if (!bnode[d]->d || (!ply_overflow(d) && fold_ew_tree(d + 1, lnode, bnode))) {
                     merge_nodes(lnode[d], bnode[d]);
                     bnode[d] = bnode[d]->r;
                 }
@@ -79,7 +86,7 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
             while (bnode[d]) {
 
                 if (lnode[d]->p == bnode[d]->p && lnode[d]->c == bnode[d]->c) {
-                    if (!bnode[d]->d || fold_ew_tree(d + 1, lnode, bnode)) {
+                    if (!bnode[d]->d || (!ply_overflow(d) && fold_ew_tree(d + 1, lnode, bnode))) {
                         match = YES;
                         merge_nodes(lnode[d], bnode[d]);
                         lnode[d] = lnode[d]->r;

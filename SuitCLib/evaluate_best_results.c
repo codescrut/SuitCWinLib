@@ -40,8 +40,29 @@ int evaluate_best_results(void)
 
     while (lquirkd[l]) {
 
+        //  il/ih are 8 bit fields, so a stale range can reach past boardcount
+        //  and index t[], result[] and nslimits[] out of bounds. Check it once
+        //  per node, before the entries themselves are read.
+        if (lquirkd[l]->il <= lquirkd[l]->ih && lquirkd[l]->ih >= boardcount) {
+            resultrange = YES;
+            return 0;
+        }
+
         //  compute the results
         for (k = lquirkd[l]->il; k <= lquirkd[l]->ih; k++) {
+
+            //  t[] is filled per board by convert_tree_to_quirk, and a QUIRKD
+            //  whose [il,ih] range reaches an entry its header never filled
+            //  reads the 0xff fill instead. ns is an 8 bit field, so such a
+            //  value indexes tricks[]/perc[]/best_N[] -- all NCARDS+1 long,
+            //  two of them on the stack -- hundreds of entries past the end,
+            //  destroying the /GS cookie and killing the host process with an
+            //  uncatchable STATUS_STACK_BUFFER_OVERRUN. Refuse the call.
+            if (lquirkdl[l]->h->t[k].ns > ntricks) {
+                resultrange = YES;
+                return 0;
+            }
+
             minns = MIN(minns, lquirkdl[l]->h->t[k].ns);
             maxns = MAX(maxns, lquirkdl[l]->h->t[k].ns);
             nslimits[0][k] = MIN(nslimits[0][k], lquirkdl[l]->h->t[k].ns);

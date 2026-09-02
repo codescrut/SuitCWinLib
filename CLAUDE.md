@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 SuitCWinLib is a Windows DLL port of **SuitC**, a Bridge card game suit combination analyzer. It calculates optimal card plays, trick probabilities, and scoring comparisons (matchpoint vs IMP) for specific suit combinations.
 
 - **Author:** Gerrit A. van der Velde (original SuitC), Lars Kappel Hansen (Windows port)
-- **Version:** 0.9.0.10
+- **Version:** 0.9.0.11
 
 ## Build Commands
 

@@ -18,6 +18,13 @@ void check_ns_plays(int d, struct NODE** lnode)
     struct NODE* bnode[NPLIES + 1];
     struct INDEX* lindex, * bindex;
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     //  compare all siblings
     bnode[d - 1] = lnode[d - 1];
     lnode[d] = lnode[d - 1]->d;

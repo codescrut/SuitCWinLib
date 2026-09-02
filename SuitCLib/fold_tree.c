@@ -16,6 +16,13 @@ void fold_tree(int d, int p)
 {
     struct NODE* bnode[NPLIES + 1], * lnode[NPLIES + 1];
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     //  initialise
     bnode[d - 1] = tnode[d - 1];
     lnode[d - 1] = tnode[d - 1];
@@ -39,7 +46,7 @@ void fold_tree(int d, int p)
                     tnode[d]->r = lnode[d];
                     lnode[d]->l = tnode[d];
 
-                    if (!bnode[d]->d || (NS(p) ? fold_ns_tree(d + 1, lnode[d]->c | bnode[d]->c, lnode, bnode) : fold_ew_tree(d + 1, lnode, bnode))) {
+                    if (!bnode[d]->d || (!ply_overflow(d) && (NS(p) ? fold_ns_tree(d + 1, lnode[d]->c | bnode[d]->c, lnode, bnode) : fold_ew_tree(d + 1, lnode, bnode)))) {
                         merge_nodes(lnode[d], bnode[d]);
                         lnode[d] = bnode[d]->l;
                         delete_tree(d, bnode);
@@ -61,7 +68,7 @@ void fold_tree(int d, int p)
     //  investigate the sons
     tnode[d] = tnode[d - 1]->d;
     while (tnode[d]) {
-        if (tnode[d]->d)
+        if (tnode[d]->d && !ply_overflow(d))
             fold_tree(d + 1, p);
         tnode[d] = tnode[d]->r;
     }

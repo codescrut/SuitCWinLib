@@ -64,7 +64,7 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_root, in
                 k++;
         w[d] = MAX(w[d], k);
 
-        if (lnode[d]->d) {
+        if (lnode[d]->d && !ply_overflow(d)) {
             d++;
             maxply = MAX(maxply, d);
             lnode[d] = lnode[d - 1]->d;

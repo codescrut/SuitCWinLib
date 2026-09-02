@@ -18,6 +18,13 @@ void delete_board(int d, struct NODE** lnode, int b)
 {
     struct INDEX* bindex, * lindex;
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     //  check each son in turn
     lnode[d] = lnode[d - 1]->d;
     while (lnode[d]) {
@@ -39,7 +46,8 @@ void delete_board(int d, struct NODE** lnode, int b)
 
             //  delete the boards from the sons
             if (lnode[d]->i) {
-                delete_board(d + 1, lnode, b);
+                if (!ply_overflow(d))
+                    delete_board(d + 1, lnode, b);
                 lnode[d] = lnode[d]->r;
             }
             else

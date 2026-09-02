@@ -24,6 +24,13 @@ void determine_trick_count(int d, struct NODE** lnode)
     struct NODE* bnode[NPLIES + 1];
     struct INDEX* bindex, * lindex;
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     //  return if there are no sons
     if (lnode[d - 1]->d == NIL)
         return;

@@ -18,6 +18,12 @@ struct NODE* copy_tree(int d_, struct NODE* rootn)
     struct INDEX* lindex, * tindex = NIL;
     struct NODE* lnode[NPLIES + 1], * tnode[NPLIES + 1];
 
+    //  refuse rather than index lnode[]/tnode[] past their end
+    if (d_ < 0 || d_ > MAXPLY) {
+        treeoverflow = YES;
+        return(NIL);
+    }
+
     //  loop over the nodes
     lnode[d] = rootn;
     tnode[d] = NIL;
@@ -65,7 +71,7 @@ struct NODE* copy_tree(int d_, struct NODE* rootn)
         tindex->r = NIL;
 
         //  handle the sons
-        if (lnode[d]->d) {
+        if (lnode[d]->d && !ply_overflow(d)) {
             d++;
             lnode[d] = lnode[d - 1]->d;
             tnode[d] = NIL;

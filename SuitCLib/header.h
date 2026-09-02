@@ -66,6 +66,14 @@
 // #define w_ew( lnode )                   ( lnode[d]->w_c & ( brd[0][west] | brd[0][east] ) )
 // #define w_ns( lnode )                   ( lnode[d]->c & lnode[d]->w_c )
 #define YES                             1
+
+//  the walker stacks bnode[]/lnode[]/tnode[] hold NPLIES+1 entries, so MAXPLY is
+//  the highest index that may legally be written. A well formed tree never gets
+//  near it (13 cards x 4 hands = 52 plies), but a corrupted ->d chain walks past
+//  the end of a stack array and trips the /GS cookie, which kills the process
+//  outright: __fastfail cannot be caught by the host. Every descend is guarded.
+#define MAXPLY                          NPLIES
+#define ply_overflow( d )               ( ( d ) >= MAXPLY ? ( treeoverflow = YES ) : NO )
 #define MAX_PLAYED_TRICKS               NCARDS
 #define DISCARD                         ( (COLOR) 0xFFFF )
 
@@ -256,7 +264,10 @@ extern SUITC_API int    qhcountmax;
 extern SUITC_API int    reorder;
 extern SUITC_API int    resultsonly;
 extern SUITC_API int    usesuitentries;
+extern SUITC_API int    poolfull;
+extern SUITC_API int    resultrange;
 extern SUITC_API int    trace;
+extern SUITC_API int    treeoverflow;
 extern SUITC_API int    tricklimit;
 extern SUITC_API int    westvac;
 extern SUITC_API int    z_count;

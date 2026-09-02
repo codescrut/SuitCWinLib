@@ -13,7 +13,9 @@
 
 void print_all_results(char* output, char* optimumdetails)
 {
-    int           accept, best_MAX, best_MP, best_N[NCARDS], i, ih, ix = 0, k, l = 0;
+    //  best_N is indexed by trick count, which runs 0..ntricks inclusive, so
+    //  it needs NCARDS+1 entries -- as res[]/tricks[]/perc[] all have
+    int           accept, best_MAX, best_MP, best_N[NCARDS + 1], i, ih, ix = 0, k, l = 0;
     double        mpscore, tricksum;
     struct QUIRKD* lquirkd[NBOARDS], * lquirkdl[NBOARDS];
     struct RESULT result[NBOARDS];

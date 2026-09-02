@@ -18,11 +18,23 @@ struct NODE* delete_tree(int d_, struct NODE** lnode)
     struct INDEX* lindex;
     struct NODE  znode;
 
+    //  refuse rather than index the caller's lnode[] past its end
+    if (d_ < 0 || d_ > MAXPLY) {
+        treeoverflow = YES;
+        return(NIL);
+    }
+
     //  loop over the nodes
     while (lnode[d]) {
 
         //  handle the sons
         if (lnode[d]->d) {
+
+            //  the caller's lnode[] holds MAXPLY+1 entries; refuse the descend
+            //  instead of writing past its end
+            if (ply_overflow(d))
+                return(NIL);
+
             d++;
             lnode[d] = lnode[d - 1]->d;
         }

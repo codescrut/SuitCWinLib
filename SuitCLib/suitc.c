@@ -55,6 +55,12 @@ void release_memory()
             free(savenextquirkh[i].t);
             savenextquirkh[i].t = NIL;
         }
+
+        //  the last slot is the pool-full sentinel; bump_quirkh never counts it
+        //  in qhcountmax, so the loop above does not reach its `t`
+        free(savenextquirkh[NQUIRKS - 1].t);
+        savenextquirkh[NQUIRKS - 1].t = NIL;
+
         free(savenextquirkh);
         savenextquirkh = NIL;
     }
@@ -85,6 +91,30 @@ void release_memory()
         score = NIL;
     }
 }
+
+//  A pool that ran out of entries, or a tree deeper than the fixed-size walker
+//  stacks, means the NODE tree is no longer trustworthy: the analysis that
+//  follows would report a result derived from a truncated or half-built tree.
+//  Refuse the call instead. Returns YES after emitting the error document.
+static int suitc_tree_is_unsound(char* output)
+{
+    const char* why;
+
+    if (!poolfull && !treeoverflow && !resultrange)
+        return NO;
+
+    if (treeoverflow)
+        why = "The game tree exceeded the maximum ply depth";
+    else if (resultrange)
+        why = "The game tree produced a trick count outside the possible range";
+    else
+        why = "The game tree exceeded the available memory pools";
+
+    release_memory();
+    output_error(output, why);
+    return YES;
+}
+
 
 //  Public: release all native heap held by the library and (on glibc) ask the
 //  allocator to return memory to the OS. Safe to call when no call_suitc() is
@@ -153,6 +183,9 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     westfixed = RENONCE;
     westvac = NCARDS;
     zermelo = 1;
+    poolfull = NO;
+    resultrange = NO;
+    treeoverflow = NO;
     nplayedtricks = 0;
     for (p = 0; p < 4; p++)
         brd[0][p] = RENONCE;
@@ -209,6 +242,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         output_error(output, "The game tree could not be built");
         return -1;
     }
+    if (suitc_tree_is_unsound(output))
+        return -1;
 
     //  print the tree
     if (printtrunctree) {
@@ -246,11 +281,27 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         return -1;
     }
 
+    //  Reserve the last QUIRKH slot as the sentinel bump_quirkh hands out once
+    //  the pool is exhausted. Allocating its `t` here -- where an allocation
+    //  failure can still be reported as an error -- is what lets bump_quirkh
+    //  drop the exit(99) it used to call from inside the host process.
+    savenextquirkh[NQUIRKS - 1].t = NIL;
+    savenextquirkh[NQUIRKS - 1].t = (struct TRICKS *) malloc(boardcount * sizeof(struct TRICKS));
+    if (!savenextquirkh[NQUIRKS - 1].t) {
+        printf("The memory assignment for the TRICKS entries failed\n");
+        output_error(output, "The memory assignment for the TRICKS entries failed");
+        release_memory();
+        return -1;
+    }
+
     //  build the quirk tree
     convert_tree_to_quirk();
 
     //  determine best_result, the minimum and maximum number of tricks and the number of plays
     nplays = evaluate_best_results();
+
+    if (suitc_tree_is_unsound(output))
+        return -1;
 
     if (!SUITCAPP) {
         if (ewwinners) {
@@ -335,7 +386,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         ncountmax = 1;
         nextnode = wnode[0] + 1;
         buildtree = 1;
-        if (create_tricks(1) != 0) {
+        if (create_tricks(1) != 0 || poolfull || treeoverflow || resultrange) {
             //  no output_error here: `output` already carries "OptimalResults":[...
             //  so the self-contained error document would be malformed JSON.
             release_memory();

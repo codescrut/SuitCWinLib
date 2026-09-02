@@ -16,13 +16,20 @@
 
 int fold_ns_tree(int d, COLOR c, struct NODE** lnode, struct NODE** bnode)
 {
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return(NO);
+    }
+
     bnode[d] = bnode[d - 1]->d;
     lnode[d] = lnode[d - 1]->d;
     if (EW(lnode[d]->p)) {
         while (lnode[d] && bnode[d]) {
             if (lnode[d]->p != bnode[d]->p || lnode[d]->c != bnode[d]->c)
                 return(NO);
-            if (bnode[d]->d && !fold_ns_tree(d + 1, c, lnode, bnode))
+            if (bnode[d]->d && (ply_overflow(d) || !fold_ns_tree(d + 1, c, lnode, bnode)))
                 return(NO);
             bnode[d] = bnode[d]->r;
             lnode[d] = lnode[d]->r;
@@ -30,7 +37,6 @@ int fold_ns_tree(int d, COLOR c, struct NODE** lnode, struct NODE** bnode)
         if (lnode[d] || bnode[d])
             return(NO);
     }
-
     else if (NS(lnode[d]->p)) {
 
         while (bnode[d]) {
@@ -46,13 +52,13 @@ int fold_ns_tree(int d, COLOR c, struct NODE** lnode, struct NODE** bnode)
 
                 if (lnode[d]->p == bnode[d]->p) {
                     if (c & lnode[d]->c && c & bnode[d]->c) {
-                        if (w_ew(lnode) == w_ew(bnode) && (!bnode[d]->d || fold_ns_tree(d + 1, c, lnode, bnode))) {
+                        if (w_ew(lnode) == w_ew(bnode) && (!bnode[d]->d || (!ply_overflow(d) && fold_ns_tree(d + 1, c, lnode, bnode)))) {
                             bnode[d]->match = YES;
                             lnode[d]->match = YES;
                             lnode[d]->c = c;
                         }
                     }
-                    else if (lnode[d]->c == bnode[d]->c && (!bnode[d]->d || fold_ns_tree(d + 1, c, lnode, bnode))) {
+                    else if (lnode[d]->c == bnode[d]->c && (!bnode[d]->d || (!ply_overflow(d) && fold_ns_tree(d + 1, c, lnode, bnode)))) {
                         bnode[d]->match = YES;
                         lnode[d]->match = YES;
                     }

@@ -15,13 +15,20 @@ void select_ns_plays(int d)
 {
     struct NODE* bnode[NPLIES + 1], * lnode[NPLIES + 1];
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     //  initialise
     bnode[d - 1] = tnode[d - 1];
     lnode[d - 1] = tnode[d - 1];
     lnode[d] = tnode[d - 1]->d;
 
     //  investigate the sons
-    if (tnode[d - 1]->d->d) {
+    if (tnode[d - 1]->d->d && !ply_overflow(d)) {
         tnode[d] = tnode[d - 1]->d;
         while (tnode[d]) {
             select_ns_plays(d + 1);

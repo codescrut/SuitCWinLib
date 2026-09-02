@@ -19,6 +19,13 @@ void check_ew_plays(int d, struct NODE** lnode)
     struct INDEX* aindex, * bindex, * lindex, anchorb, anchorl;
     struct NODE* bnode[NPLIES + 1];
 
+    //  refuse rather than index the walker stacks past their end: a corrupted
+    //  ->d chain must not reach the /GS cookie below bnode[]/lnode[]
+    if (d < 1 || d > MAXPLY) {
+        treeoverflow = YES;
+        return;
+    }
+
     bnode[d - 1] = lnode[d - 1];
 
 recheck_all_nodes:
@@ -109,8 +116,10 @@ next_lnode:
 
                     //  handle the sons if any boards left
                     if (lnode[d]->i) {
-                        delete_board(d + 1, lnode, b);
-                        determine_trick_count(d + 1, lnode);
+                        if (!ply_overflow(d)) {
+                            delete_board(d + 1, lnode, b);
+                            determine_trick_count(d + 1, lnode);
+                        }
                         break;
                     }
                     else {
@@ -128,8 +137,10 @@ next_lnode:
 
                     //  handle the sons if any boards left
                     if (bnode[d]->i) {
-                        delete_board(d + 1, bnode, b);
-                        determine_trick_count(d + 1, bnode);
+                        if (!ply_overflow(d)) {
+                            delete_board(d + 1, bnode, b);
+                            determine_trick_count(d + 1, bnode);
+                        }
                         break;
                     }
                     else {

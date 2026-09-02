@@ -41,7 +41,7 @@ void convert_tree_to_quirk(void)
     while (wnode[d]) {
 
         //  get the oldest son
-        if (wnode[d]->d) {
+        if (wnode[d]->d && !ply_overflow(d)) {
             d++;
             quirkdl[d - 1].h = NIL;
             wnode[d] = wnode[d - 1]->d;

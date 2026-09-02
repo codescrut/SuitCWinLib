@@ -55,11 +55,15 @@ void build_selected_tree(void)
                 lnode[d] = lnode[d]->r;
 
             //  get the son
-            else {
+            else if (!ply_overflow(d)) {
                 d++;
                 lnode[d] = lnode[d - 1]->d;
                 tnode[d] = NIL;
             }
+
+            //  deeper than lnode[]/tnode[] can hold; treat the node as terminal
+            else
+                lnode[d] = lnode[d]->r;
         }
 
         //  the node is not accepted; continue with the next sibling

@@ -28,8 +28,9 @@ void use_suit_entries( void )
     tnode[d] = tnode[d-1]->d;
     while ( d ) {
 
-        //  loop untill a leave
-        while ( tnode[d]->d ) {
+        //  loop untill a leave; stop at MAXPLY rather than index bnode/lnode
+        //  past their end when the tree is deeper than it can legally be
+        while ( tnode[d]->d && ! ply_overflow( d ) ) {
             d++;
             tnode[d] = tnode[d-1]->d;
         }
