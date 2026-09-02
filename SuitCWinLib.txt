@@ -9,7 +9,20 @@ Compiled and tested in VS2022
 Release notes
 =============
 
+0.9.0.10
+- Fix access violation (0xC0000005) on empty game trees: -wv/-ev (or -wm/-em)
+  combined with played tricks can filter every board away, leaving plies with no
+  nodes and a selected tree with no descendants. Guards in build_selected_tree,
+  create_ply1-4 and use_suit_entries; an error document is returned instead
+- Release memory on both create_tricks failure paths
+
+0.9.0.9
+- Fix malformed JSON on SuitC error/success output
+
 0.9.0.8
+- Fix native heap leak (~430 KB per call_suitc) and a double-free crash;
+  export suitc_free_memory() so hosts can release the internal pools
+- Platform-aware wchar_t marshalling (2 bytes on Windows, 4 on Linux/macOS)
 - Fix memory leaks in evaluate_mp_scores, limit_matchpoint_nodes, and limit_quirk
   (leaked KB to MB per call; accumulated to GB over long sessions)
 
