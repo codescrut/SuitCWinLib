@@ -46,6 +46,14 @@ int create_ply3(int d, int p)
         return -1;
     }
 
+    //  no play is possible at this ply (e.g. every board was filtered away by
+    //  ncardsmin from -wv/-ev/-wm/-em after played tricks removed cards). Report
+    //  the error instead of dereferencing a NIL node.
+    if (!znode.r) {
+        printf("ERROR: no plays are available at ply %d\n", d);
+        return -1;
+    }
+
     //  check the plays
     znode.r->l = NIL;
     wnode[d - 1]->d = znode.r;

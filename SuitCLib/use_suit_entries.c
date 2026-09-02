@@ -17,6 +17,12 @@ void use_suit_entries( void )
     int           d = 1;
     struct NODE   *bnode[NPLIES+1], *lnode[NPLIES+1];
 
+    //  build_selected_tree can legitimately produce an empty selection (every
+    //  sibling rejected at some depth), leaving the root without descendants.
+    //  There is then nothing to optimise -- walking it dereferences NIL.
+    if ( ! tnode[0] || ! tnode[0]->d )
+        return;
+
     bnode[0] = tnode[0];
     lnode[0] = tnode[0];
     tnode[d] = tnode[d-1]->d;

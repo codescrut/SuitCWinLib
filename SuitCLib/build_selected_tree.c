@@ -70,10 +70,15 @@ void build_selected_tree(void)
         while (d && !lnode[d]) {
 
             //   check the result
-            if (NS(tnode[d]->p))
-                check_ns_plays(d, tnode);
-            else
-                check_ew_plays(d, tnode);
+            //   tnode[d] is NIL when every sibling at this depth was rejected
+            //   (lindex->max < nstricks[..] for all of them); there is then no
+            //   selected subtree to check -- dereferencing it is an access violation.
+            if (tnode[d]) {
+                if (NS(tnode[d]->p))
+                    check_ns_plays(d, tnode);
+                else
+                    check_ew_plays(d, tnode);
+            }
 
             d--;
             lnode[d] = lnode[d]->r;

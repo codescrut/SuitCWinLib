@@ -205,6 +205,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
 
     //  build the tree
     if (create_tricks(1) != 0) {
+        release_memory();
+        output_error(output, "The game tree could not be built");
         return -1;
     }
 
@@ -334,6 +336,9 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         nextnode = wnode[0] + 1;
         buildtree = 1;
         if (create_tricks(1) != 0) {
+            //  no output_error here: `output` already carries "OptimalResults":[...
+            //  so the self-contained error document would be malformed JSON.
+            release_memory();
             return -1;
         }
 
