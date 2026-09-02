@@ -36,7 +36,12 @@ jobs:
         working-directory: SuitCLib
         run: |
           make clean
-          make TARGET_LIB=${{ matrix.lib_name }} LDFLAGS="${{ matrix.ldflags }}" SUITCAPP=0
+          # SUITCAPP=1 to match the Windows DLL (SuitCLib.vcxproj sets SUITCAPP=YES).
+          # SUITCAPP=0 is the exhaustive-analysis mode: it raises NQUIRKS from 4M to
+          # 80M and, because every guard is written `if (!SUITCAPP) printf(...)`, it
+          # also makes the library print the whole analysis to stdout -- neither of
+          # which a library hosted inside Brill or BEN wants.
+          make TARGET_LIB=${{ matrix.lib_name }} LDFLAGS="${{ matrix.ldflags }}" SUITCAPP=1
 
       - name: List build output
         working-directory: SuitCLib
