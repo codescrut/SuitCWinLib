@@ -199,8 +199,7 @@ int create_all_boards(void)
 
     //  if no boards are left
     if (boardcount == 0) {
-        printf("\nERROR: No boards are left!\n\n");
-        return -1;;
+        return -1;
     }
 
     //  collect the cards in each hand and scale the percentages

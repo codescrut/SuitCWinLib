@@ -137,6 +137,7 @@ int create_boards(char* output)
 
     //  generate the full set of boards
     if (create_all_boards() != 0) {
+        output_error(output, "No boards are left");
         return -1;
     }
 

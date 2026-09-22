@@ -17,7 +17,7 @@ extern "C" EXPORT const char* CALLCONV
 
 version()
 {
-	static const char ver[] = "0.9.0.11";  // Ensure memory remains valid
+	static const char ver[] = "0.9.0.12";  // Ensure memory remains valid
 	return ver;
 }
 
@@ -153,7 +153,7 @@ extern "C" EXPORT int CALLCONV
 	optimumDetails[0] = '\0';
 
 
-	suitc_main(argc, argv, output, optimumDetails);
+	int suitcResult = suitc_main(argc, argv, output, optimumDetails);
 	int outputLen = strlen(output);
 	for (int i = 0; i < outputLen; i++)
 	{
@@ -176,7 +176,7 @@ extern "C" EXPORT int CALLCONV
 	delete[] argv;
 	delete[] argLen;
 
-	return 0;
+	return suitcResult == 0 ? 0 : 1;
 }
 
 
