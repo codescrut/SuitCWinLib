@@ -74,13 +74,8 @@ void create_game_tree_json_value(struct TREE_ELEMENT* treeElements, int treeElem
 	strcat(gameTreeJsonValue, "[\n");  // Begin JSON array
 	int elementNo = 0;
 	for (int elementNo = 0; elementNo < treeElementsCount; elementNo++) {
-		char tempBuffer[JSON_BUFFER_SIZE];  // Temporary buffer for each element
-		tempBuffer[0] = '\0';
-
 		construct_game_tree(treeElements, treeElementsCount, gameTreeJsonValue, &elementNo);
 		elementNo--;
-
-		strcat(gameTreeJsonValue, tempBuffer);  // Append element JSON
 
 		if (elementNo < treeElementsCount - 1) {
 			strcat(gameTreeJsonValue, ",\n");  // Add comma **only if not the last element**

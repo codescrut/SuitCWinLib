@@ -13,8 +13,8 @@
 
 int main(int argc, char **argv)
 {
-    char output[JSON_BUFFER_SIZE];
-    char optimumdetails[JSON_BUFFER_SIZE];
+    static char output[JSON_BUFFER_SIZE];
+    static char optimumdetails[JSON_BUFFER_SIZE];
 
     output[0] = '\0';
     optimumdetails[0] = '\0';

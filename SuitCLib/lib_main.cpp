@@ -17,7 +17,7 @@ extern "C" EXPORT const char* CALLCONV
 
 version()
 {
-	static const char ver[] = "0.9.0.12";  // Ensure memory remains valid
+	static const char ver[] = "0.9.1.0";  // Ensure memory remains valid
 	return ver;
 }
 
@@ -145,11 +145,13 @@ extern "C" EXPORT int CALLCONV
 		(argv[i])[argLen[i]] = '\0';
 	}
 
-	char output[JSON_BUFFER_SIZE];
+	// static, not on the stack: 2 x 128 KB overflows small host thread stacks
+	// (an IIS request thread has 256 KB). suitc_main is not reentrant anyway.
+	static char output[JSON_BUFFER_SIZE];
 	output[0] = '\0';
 	//strncat(test, "abc", 20);
 
-	char optimumDetails[JSON_BUFFER_SIZE];
+	static char optimumDetails[JSON_BUFFER_SIZE];
 	optimumDetails[0] = '\0';
 
 

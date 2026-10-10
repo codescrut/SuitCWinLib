@@ -172,7 +172,7 @@ void print_all_results(char* output, char* optimumdetails)
                     //}
                     //printf("treeElementsCount %d\n", treeElementsCount);
 
-                    char gameTreeJsonValue[JSON_BUFFER_SIZE];
+                    static char gameTreeJsonValue[JSON_BUFFER_SIZE];  // static: too big for small host stacks
                     // printf("create_game_tree_json_value\n");
                     create_game_tree_json_value(treeElements, treeElementsCount, gameTreeJsonValue);
                     // printf("create_game_tree_json_value done\n");

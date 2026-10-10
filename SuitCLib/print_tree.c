@@ -34,7 +34,7 @@ void add_tree_element(struct TREE_ELEMENT* treeElements, int* pTreeElementCount,
 void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_root, int d_high, struct NODE* root, int printboards, int printsiblings, struct TREE_ELEMENT* treeElements, int* pTreeElementCount)
 {
     int          b, d, i, k, l, maxply, w[NPLIES + 1], wlen;
-    char         out[40000];
+    static char  out[40000];
     COLOR        cards;
     static const char  hexdigit[] = "0123456789abcdef";
     static const char* symbols[] = { "-123456789tjqka=", "-123456789tbvha=", "-123456789TJQKA=", "-123456789TBVHA=" };
@@ -43,7 +43,7 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_root, in
     struct INDEX* lindex;
     struct SCARD* sc;
 
-    char          str[40000];
+    static char   str[40000];
     *pTreeElementCount = 0;
 
     //  return if the root of the tree is the NIL entry
