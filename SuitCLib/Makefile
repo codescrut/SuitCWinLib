@@ -12,8 +12,9 @@ SUITCAPP ?= 1
 # -g: Add debug symbols (optional, but good for development)
 # -DSUITCAPP=0: Example of defining SUITCAPP, change value as needed or remove if set elsewhere
 #               You can override this on the command line: make SUITCAPP=1
-CFLAGS = -fPIC -Wall -Wextra -I. -g -DSUITCAPP=$(SUITCAPP)
-CXXFLAGS = -fPIC -Wall -Wextra -I. -g -DSUITCAPP=$(SUITCAPP)
+OPT ?= -O3
+CFLAGS = -fPIC -Wall -Wextra -I. -g $(OPT) -DSUITCAPP=$(SUITCAPP)
+CXXFLAGS = -fPIC -Wall -Wextra -I. -g $(OPT) -DSUITCAPP=$(SUITCAPP)
 
 # Linker flags
 # -shared: Create a shared library
