@@ -35,8 +35,20 @@ void output_add(char* output, const char* s)
 //  tail inline so the comma/array-close stay correct there.
 void output_error(char* output, const char* error)
 {
+    //  the message becomes a JSON string: escape quotes and backslashes and
+    //  turn control characters (such as a trailing newline) into spaces
+    char escaped[512];
+    size_t n = 0;
+
+    for (; *error && n < sizeof(escaped) - 2; error++) {
+        if (*error == '"' || *error == '\\')
+            escaped[n++] = '\\';
+        escaped[n++] = (unsigned char)*error < 0x20 ? ' ' : *error;
+    }
+    escaped[n] = '\0';
+
     output_add(output, "\n\"Error\":\"");
-    output_add(output, error);
+    output_add(output, escaped);
     output_add(output, "\"}}");
 }
 
@@ -192,8 +204,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
 
     //  process the command line
     if (process_args(argc, argv) != 0) {
-        fprintf(stderr, "Usage: program [options] Leader[filename]\n");
-        output_error(output, "Usage: program [options] Leader[filename]\n");
+        fprintf(stderr, "Invalid command line arguments\n");
+        output_error(output, "Invalid command line arguments");
         return -1;
     }
 
