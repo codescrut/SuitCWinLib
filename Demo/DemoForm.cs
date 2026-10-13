@@ -8,7 +8,9 @@ namespace Demo
 {
     public partial class DemoForm : Form
     {
-        const int JSON_BUFFER_SIZE = 32768;
+        // The library writes up to JSON_BUFFER_SIZE (32768*4) characters plus a
+        // terminating null into each output buffer, without checking the size.
+        const int JSON_BUFFER_SIZE = 32768 * 4 + 1;
 
         [DllImport("SuitCLib.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int call_suitc(ref IntPtr inputChars, int inputSize,
@@ -95,36 +97,14 @@ namespace Demo
                                     ref outputCharsBuffer, ref outputCharsSize,
                                     ref optimumDetailsCharsBuffer, ref optimumDetailsCharsSize);
 
-            String s = "";
-            if (result == 0)
+            // On success the output holds the analysis; on failure (result 1) it
+            // holds a JSON document with the error message.
+            string s = outputCharsSize > 0
+                ? Marshal.PtrToStringUni(outputCharsBuffer, outputCharsSize)
+                : "Error: No result returned";
+            if (result == 0 && optimumDetailsCharsSize > 0)
             {
-                if (outputCharsSize > 0)
-                {
-                    char[] outputChars = new char[outputCharsSize];
-                    Marshal.Copy(outputCharsBuffer, outputChars, 0, outputCharsSize);
-                    foreach (char c in outputChars)
-                    {
-                        s += c;
-                    }
-                    if (optimumDetailsCharsSize > 0)
-                    {
-                        optimumDetails = "";
-                        char[] optimumDetailsChars = new char[optimumDetailsCharsSize];
-                        Marshal.Copy(optimumDetailsCharsBuffer, optimumDetailsChars, 0, optimumDetailsCharsSize);
-                        foreach (char c in optimumDetailsChars)
-                        {
-                            optimumDetails += c;
-                        }
-                    }
-                }
-                else
-                {
-                    s = "Error: No result returned";
-                }
-            }
-            else
-            {
-                s = "Error: " + result.ToString();
+                optimumDetails = Marshal.PtrToStringUni(optimumDetailsCharsBuffer, optimumDetailsCharsSize);
             }
 
             Marshal.FreeCoTaskMem(optimumDetailsCharsBuffer);
