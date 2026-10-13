@@ -77,7 +77,7 @@ ${EXEC}: ${OBJECTS}
 .c.o:
 	${CC} -c $*.c
 
-${OBJECTS}:	Makefile.exe	bump_codes.h	header.h
+${OBJECTS}:	Makefile.cli	bump_codes.h	header.h
 
 clean:
 	-@rm -f ${OBJECTS} ${EXEC} > /dev/null 2>&1
