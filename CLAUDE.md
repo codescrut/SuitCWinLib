@@ -21,15 +21,28 @@ The solution contains two projects:
 - **SuitCLib** (C++ DLL) → produces `SuitCLib.dll`
 - **Demo** (C# WinForms, .NET 8.0) → produces `Demo.exe`, depends on `SuitCLib.dll`
 
-### Linux — Makefile
+### Linux / macOS — Makefile
 
 ```bash
 cd SuitCLib
-make clean && make          # SUITCAPP defaults to 1
+make clean && make          # SUITCAPP defaults to 1, OPT defaults to -O3
 make SUITCAPP=0             # Exhaustive analysis mode (uses 80M quirk entries instead of 4M)
+make TARGET_LIB=libsuitc.dylib LDFLAGS="-dynamiclib -fvisibility=hidden"   # macOS
+make -f Makefile.cli        # stand-alone SuitC executable from the same sources
 ```
 
-Produces `libsuitc.so`.
+Produces `libsuitc.so` / `libsuitc.dylib`.
+
+### Tests
+
+```bash
+python tests/run_tests.py SuitCLib/x64/Release/SuitCLib.dll   # or SuitCLib/libsuitc.so
+python tests/run_tests.py <library> --update                  # only for intended changes
+```
+
+31 cases (tests/cases.txt) run through `call_suitc` in one process; JSON and text
+output must match tests/expected exactly. Output is identical on MSVC and gcc.
+Any change not meant to alter results must keep all cases passing.
 
 ## Architecture
 
@@ -39,6 +52,8 @@ The public API is defined in [lib_main.h](SuitCLib/lib_main.h) and implemented i
 
 - `call_suitc()` — Main entry point. Takes wide-char command-line parameters, returns two JSON buffers (results + optimum details). Called from C# via P/Invoke.
 - `version()` — Returns version string.
+- `free_memory()` — Releases SuitC's memory pools.
+- Callers must pass output buffers of at least JSON_BUFFER_SIZE+1 (131073) wide chars; the size is not checked. Not reentrant (global state).
 
 `call_suitc()` parses the wide-char input into argc/argv, then delegates to `suitc_main()` in [suitc.c](SuitCLib/suitc.c).
 
