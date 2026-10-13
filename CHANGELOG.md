@@ -1,9 +1,9 @@
 # Changelog
 
-## Unreleased: 1.0.0
+## Unreleased
 
-The first open-source release. It will be built on the latest SuitC revision
-from Gerrit A. van der Velde.
+Changes since 0.9.1.0, for the open-source release. The analysis results are
+unchanged. The version will become 1.0.0 in a later release.
 
 - MIT licence, README, API documentation and credits.
 - `call_suitc` returns valid JSON when the command line is invalid; the error
@@ -12,6 +12,8 @@ from Gerrit A. van der Velde.
   overflow); error documents are now shown.
 - Project files work from a clean checkout: the demo copies the DLL itself,
   and the Win32 configurations no longer write to a leftover directory.
+- The Linux and macOS libraries are built with `-O3`; they were unoptimised.
+  Large combinations run about 2.5 times faster, with identical results.
 - Python example and regression tests (31 cases, identical on Windows and
   Linux).
 - Build outputs are no longer kept in the repository; they are published as
