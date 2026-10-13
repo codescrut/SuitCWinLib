@@ -12,4 +12,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Copy SuitCLib.dll from the solution build (build_dll.bat or Visual Studio, Release|x64). -->
+    <None Include="..\SuitCLib\x64\Release\SuitCLib.dll" Link="SuitCLib.dll" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\SuitCLib\x64\Release\SuitCLib.dll')" />
+  </ItemGroup>
+
 </Project>
