@@ -1,0 +1,16 @@
+
+
+
+The optimum play for: MAX N3
+============================
+
+	3 tricks:  36.0656
+	2 tricks:  63.9344
+	Result  :   2.3607
+
+                                       - 7 8 9 T
+                                       8   7 8 9
+                                       9 9   7 8
+                                       T T T   7
+                                       J J J J -
+S:5  J-  Q  T-    N:K  T-  4  J-    ns=2 2 3 2 2 

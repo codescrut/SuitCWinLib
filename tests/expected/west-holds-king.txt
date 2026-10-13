@@ -1,0 +1,20 @@
+
+
+
+The optimum play for: MAX
+=========================
+
+	3 tricks: 100.0000
+	Result  :   3.0000
+
+                                      - 5 6 7 8 9 T
+                                      5   5 6 7 8 9
+                                      6 6   5 6 7 8
+                                      7 7 7   5 6 7
+                                      8 8 8 8   5 6
+                                      9 9 9 9 9   5
+                                      T T T T T T  
+                                      K K K K K K K
+S:4  K  A  T-    N:Q  T-  2  T-    ns=3 3 3 3 3 3 3 
+     T  J  T-    S:3  K   A  T-    ns=3 3 3 3 3 3 - 
+                      T   Q  T-    ns=3 3 3 3 3 - - 

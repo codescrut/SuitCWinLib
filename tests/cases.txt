@@ -1,0 +1,45 @@
+# Regression cases for SuitCLib: <name>: <arguments passed to call_suitc>
+# The first part mirrors the SuitC command-line tests (github.com/ThorvaldAagaard/SuitC, tests/cases.txt).
+
+# --- basic analysis
+finesse:            AQ2 543 KJT9876
+eight-ever:         AKJT 432 Q98765
+two-way:            KJ9 432 AQT8765
+summary:            -a KJ9 432 AQT8765
+results-only:       -r AKJT 432 Q98765
+
+# --- game tree presentation
+fold-none:          -F0 AQ2 543 KJT9876
+fold-compact:       -F3 AJ9 K32 QT87654
+
+# --- restrictions on the deal and the play
+west-holds-king:    -WK AQJ 432 KT98765
+west-min-length:    -t3 -wm2 AQT2 J93 K87654
+vacant-places:      -wv3 -ev5 AQJ 432 KT98765
+demo-default:       -wv9 -ev8 K3 2 AQJT987654
+trick-limit:        -t2 AKJ 432 QT98765
+lead-south:         -Ls AKJT 432 Q98765
+lead-card:          -LsQ AJ9 KQ2 T876543
+limited-entries:    -Ls -ls1 -c100 A QJT97 K865432
+no-entries:         -Ls -ls0 AQ2 543 KJT9876
+ruffs:              -Rn1 AQ 5432 KJT9876
+third-hand-rule:    -Ls -S9876:J AKJT32 54 Q9876
+defence:            -D K2 3 AQJT987654
+
+# --- scoring objectives
+matchpoints:        -M AKJT32 54 Q9876
+matchpoints-mixed:  -b -d -M -pM -Ls -ln0 -S9876:J AKJT32 54 Q9876
+imps:               -pI -I0:-300 -I1:-200 -I2:-100 -I3:620 -I4:650 AK43 J52 QT9876
+suit-entries:       -u QJ6 KT73 A98542
+zermelo:            -z1 AQT9 J32 K87654
+
+# --- played tricks (library only)
+played-one:         -Ls AQJ 432 KT98765 s25Q6
+played-two:         -Ls AQJ2 543 KT9876 s36Q7 s48J9
+played-discard:     -Ls AKQ2 543 JT9876 s3JA6
+played-seat-leader: AQJ 432 KT98765 s25Q6
+
+# --- errors: the output must be a valid JSON error document
+error-third-hand:   -S9876:J AKJT32 54 Q9876
+error-bad-trick:    AQJ 432 KT98765 Ls2KA
+error-no-leader:    AQJ 432 KT98765 25Q6

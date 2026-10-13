@@ -1,0 +1,26 @@
+rc=0
+{"SuitCAnalysis":
+{"OptimalResults":[
+{"Tricks":6,"Percentage":48.0435}
+,{"Tricks":5,"Percentage":73.4783}
+,{"Tricks":4,"Percentage":75.4348}
+,{"Tricks":3,"Percentage":100.0000}
+,{"Tricks":2,"Percentage":100.0000}
+],"Result":4.8565,
+"OptimumPlays":[
+{"OptimumPlayFor":
+"N6","Plays":[{"Tricks":6,"Percentage":48.0435},{"Tricks":5,"Percentage":2.8261},{"Tricks":4,"Percentage":1.9565},{"Tricks":3,"Percentage":13.2609},{"Tricks":1,"Percentage":33.9130}],
+"Result":3.8391
+,
+"GameTree":[
+{"T":"S:5","Vs":[{"T":"Q","Vs":[{"T":"K","Vs":[{"T":"9-","Vs":[{"T":"N:A","Vs":[{"T":"9-","Vs":[{"T":"4","Vs":[{"T":"9-","Vs":[]}]}]}]}]}]}]},{"T":"9-","Vs":[{"T":"T","Vs":[{"T":"Q9-","Vs":[{"T":"S:4","Vs":[{"T":"Q-","Vs":[{"T":"K","Vs":[{"T":"9-","Vs":[]}]}]},{"T":"9","Vs":[{"T":"J","Vs":[{"T":"Q9-","Vs":[]}]}]}]}]}]}]}]}]
+},
+{"OptimumPlayFor":
+"MAX, N2, N3, N4, N5","Plays":[{"Tricks":6,"Percentage":36.7391},{"Tricks":5,"Percentage":36.7391},{"Tricks":4,"Percentage":1.9565},{"Tricks":3,"Percentage":24.5652}],
+"Result":4.8565
+,
+"GameTree":[
+{"T":"S:5","Vs":[{"T":"Q","Vs":[{"T":"K","Vs":[{"T":"9-","Vs":[{"T":"N:A","Vs":[{"T":"9-","Vs":[{"T":"4","Vs":[{"T":"9-","Vs":[]}]}]}]}]}]}]},{"T":"9-","Vs":[{"T":"T","Vs":[{"T":"Q-","Vs":[{"T":"S:4","Vs":[{"T":"Q","Vs":[{"T":"K","Vs":[{"T":"-","Vs":[]}]}]},{"T":"9-","Vs":[{"T":"J","Vs":[{"T":"9-","Vs":[]}]}]}]}]},{"T":"9","Vs":[{"T":"N:A","Vs":[{"T":"9-","Vs":[{"T":"4","Vs":[{"T":"Q9-","Vs":[]}]}]}]}]}]}]}]}]
+
+,
+"Error":"No errors"}]}}

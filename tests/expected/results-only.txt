@@ -1,0 +1,9 @@
+
+
+
+The optimum play for: MAX N4
+============================
+
+	4 tricks:  51.2112
+	3 tricks:  48.7888
+	Result  :   3.5121

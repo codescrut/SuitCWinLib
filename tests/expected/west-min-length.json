@@ -1,0 +1,15 @@
+rc=0
+{"SuitCAnalysis":
+{"OptimalResults":[
+{"Tricks":3,"Percentage":53.0385}
+],"Result":2.5304,
+"OptimumPlays":[
+{"OptimumPlayFor":
+"MAX, N3","Plays":[{"Tricks":3,"Percentage":53.0385},{"Tricks":2,"Percentage":46.9615}],
+"Result":2.5304
+,
+"GameTree":[
+{"T":"S:J","Vs":[{"T":"K","Vs":[{"T":"A","Vs":[{"T":"8-","Vs":[{"T":"N:Q","Vs":[{"T":"8-","Vs":[{"T":"3","Vs":[{"T":"8","Vs":[{"T":"N:T","Vs":[{"T":"8-","Vs":[{"T":"9","Vs":[{"T":"8-","Vs":[]}]}]}]}]}]}]}]}]}]}]},{"T":"8","Vs":[{"T":"2","Vs":[{"T":"K8-","Vs":[{"T":"S:3","Vs":[{"T":"K","Vs":[{"T":"A","Vs":[{"T":"8-","Vs":[{"T":"N:Q","Vs":[{"T":"8-","Vs":[{"T":"9","Vs":[{"T":"8-","Vs":[]}]}]}]}]}]}]},{"T":"8","Vs":[{"T":"T","Vs":[{"T":"K8-","Vs":[{"T":"N:A","Vs":[{"T":"8-","Vs":[{"T":"9","Vs":[{"T":"K8-","Vs":[]}]}]}]}]}]}]}]}]}]}]}]}]
+
+,
+"Error":"No errors"}]}}

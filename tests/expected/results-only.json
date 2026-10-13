@@ -1,0 +1,12 @@
+rc=0
+{"SuitCAnalysis":
+{"OptimalResults":[
+{"Tricks":4,"Percentage":51.2112}
+],"Result":3.5121,
+"OptimumPlays":[
+{"OptimumPlayFor":
+"MAX, N4","Plays":[{"Tricks":4,"Percentage":51.2112},{"Tricks":3,"Percentage":48.7888}],
+"Result":3.5121
+
+,
+"Error":"No errors"}]}}

@@ -1,0 +1,14 @@
+
+
+
+The optimum play for: MAX N2
+============================
+
+	2 tricks:  52.3810
+	1 tricks:  47.6190
+	Result  :   1.5238
+
+                       - 8 K K
+                       T     8
+                       K K T -
+S:5  KT-  A  K8-    ns=1 2 2 1 

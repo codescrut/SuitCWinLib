@@ -1,0 +1,4 @@
+rc=1
+{"SuitCAnalysis":
+{
+"Error":"A leader must be specified with -L when using played tricks"}}

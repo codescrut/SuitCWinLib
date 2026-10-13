@@ -1,0 +1,23 @@
+
+
+
+The optimum play for: MAX N1
+============================
+
+	1 tricks:  52.9412
+	0 tricks:  47.0588
+	Result  :   0.5294
+
+                    4 A 5 A 6 A 7 A 8 A 9 A T A J A
+                        4 4 5 5 6 6 7 7 8 8 9 9 T T
+                    5 4     4 4 5 5 6 6 7 7 8 8 9 9
+                    6 5 6 5     4 4 5 5 6 6 7 7 8 8
+                    7 6 7 6 7 6     4 4 5 5 6 6 7 7
+                    8 7 8 7 8 7 8 7     4 4 5 5 6 6
+                    9 8 9 8 9 8 9 8 9 8     4 4 5 5
+                    T 9 T 9 T 9 T 9 T 9 T 9     4 4
+                    J T J T J T J T J T J T J T    
+                    Q J Q J Q J Q J Q J Q J Q J Q J
+                    A Q A Q A Q A Q A Q A Q A Q A Q
+S:2  A  3  Q     ns=1 - 1 - 1 - 1 - 1 - 1 - 1 - 1 - 
+     Q  K  AQ    ns=1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 

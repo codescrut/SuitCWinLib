@@ -1,0 +1,14 @@
+rc=0
+{"SuitCAnalysis":
+{"OptimalResults":[
+],"Result":3.0000,
+"OptimumPlays":[
+{"OptimumPlayFor":
+"MAX","Plays":[{"Tricks":3,"Percentage":100.0000}],
+"Result":3.0000
+,
+"GameTree":[
+{"T":"N:Q","Vs":[{"T":"A952-","Vs":[{"T":"3","Vs":[{"T":"A952-","Vs":[{"T":"N:J","Vs":[{"T":"A952-","Vs":[{"T":"7","Vs":[{"T":"A952-","Vs":[{"T":"N:6","Vs":[{"T":"A952-","Vs":[{"T":"T","Vs":[{"T":"A952-","Vs":[]}]}]}]}]}]}]}]}]}]}]}]}]
+
+,
+"Error":"No errors"}]}}

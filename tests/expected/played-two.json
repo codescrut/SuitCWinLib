@@ -1,0 +1,15 @@
+rc=0
+{"SuitCAnalysis":
+{"OptimalResults":[
+{"Tricks":2,"Percentage":52.3810}
+],"Result":1.5238,
+"OptimumPlays":[
+{"OptimumPlayFor":
+"MAX, N2","Plays":[{"Tricks":2,"Percentage":52.3810},{"Tricks":1,"Percentage":47.6190}],
+"Result":1.5238
+,
+"GameTree":[
+{"T":"S:5","Vs":[{"T":"KT-","Vs":[{"T":"A","Vs":[{"T":"K8-","Vs":[]}]}]}]}]
+
+,
+"Error":"No errors"}]}}
