@@ -1,10 +1,21 @@
 # Changelog
 
-## Unreleased
+## 1.0.0.0 (2026-10-17)
 
-Changes since 0.9.1.0, for the open-source release. The analysis results are
-unchanged. The version will become 1.0.0 in a later release.
+The first open-source release. Changes since 0.9.1.0:
 
+- Updated to SuitC Rev 2.020 from Gerrit van der Velde. The results of the
+  existing test cases are unchanged. New in the analysis:
+  - `-H{W|N|E|S}`: throw-in; the player leads to the next trick if he won the
+    last one.
+  - `-m{U|US|D|DS}`: the order in which the final game tree is folded.
+  - `-Fs<n>`: don't fold the first `<n>` plies; `-F8`: select the north-south
+    plays, then fold the east-west plays.
+  - Bug fixes in folding the east-west plays and in a fixed opening lead from
+    West (`-Lw<card>`).
+  - The IMP scores of `-I` are reset on every call; they used to carry over to
+    the next call in the same process.
+  - `-P<n>` outside 0..3 is rejected, and the minimum `-c` cutoff is 20000.
 - MIT licence, README, API documentation and credits.
 - `call_suitc` returns valid JSON when the command line is invalid; the error
   message was not escaped and broke the document.
@@ -14,7 +25,7 @@ unchanged. The version will become 1.0.0 in a later release.
   and the Win32 configurations no longer write to a leftover directory.
 - The Linux and macOS libraries are built with `-O3`; they were unoptimised.
   Large combinations run about 2.5 times faster, with identical results.
-- Python example and regression tests (31 cases, identical on Windows and
+- Python example and regression tests (41 cases, identical on Windows and
   Linux).
 - Build outputs are no longer kept in the repository; they are published as
   release assets.
