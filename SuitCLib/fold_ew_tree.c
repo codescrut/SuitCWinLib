@@ -27,10 +27,10 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
 
     bnode[d] = bnode[d - 1]->d;
     lnode[d] = lnode[d - 1]->d;
-    if (!(lnode[d] && bnode[d]))
+    if (!(lnode[d] && bnode[d]) || NS(lnode[d]->p) != NS(bnode[d]->p))
         return(NO);
 
-    if (EW(lnode[d]->p) && EW(bnode[d]->p)) {
+    if (EW(lnode[d]->p) && lnode[d]->p == bnode[d]->p) {
 
         match = YES;
         while (bnode[d]) {
@@ -49,12 +49,12 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
             }
 
             //  both branches make different plays; copy the bnode subtree into the lnode tree
-            else {
+            else if (lnode[d]->p == bnode[d]->p) {
 
                 tnode = copy_tree(d, bnode[d]);
 
                 //  copy bnode[d] as the left sibling of lnode[d]
-                if ((lnode[d]->p == bnode[d]->p && lnode[d]->c < bnode[d]->c) || lnode[d]->p > bnode[d]->p) {
+                if (lnode[d]->c < bnode[d]->c) {
                     tnode->r = lnode[d];
                     if (lnode[d]->l)
                         lnode[d]->l->r = tnode;
@@ -65,7 +65,7 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
                 }
 
                 //  copy bnode[d] as the right sibling of lnode[d]
-                else if (lnode[d]->p < bnode[d]->p || (lnode[d]->p == bnode[d]->p && lnode[d]->c > bnode[d]->c)) {
+                else if (lnode[d]->c > bnode[d]->c) {
                     tnode->l = lnode[d];
                     lnode[d]->r = tnode;
                     tnode->r = NIL;
@@ -76,7 +76,7 @@ int fold_ew_tree(int d, struct NODE** lnode, struct NODE** bnode)
         }
     }
 
-    else if (NS(lnode[d]->p) && NS(bnode[d]->p)) {
+    else if (NS(lnode[d]->p)) {
 
         match = NO;
     next_lnode:

@@ -15,6 +15,7 @@ void print_suitc(void)
 {
     int          i, k, n, p, q;
     char         out[NCARDS + 1];
+    static const char  seats[] = "WNES";
     static const char  seat[4][6] = { "West", "North", "East", "South" };
     static const char* symbols[] = { "-123456789TJQKA", "-123456789TBVHA", "-123456789tjqka", "-123456789tbvha" };
 
@@ -65,6 +66,13 @@ void print_suitc(void)
                     printf("%c", symbols[printoption & 0x1][i]);
             printf("\n");
         }
+    }
+    if (throwin) {
+        printf("\tthrowin is enabled  : ");
+        for (p = 0; p < 4; p++)
+            if (throwin & (1 << p))
+                printf("%c", seats[p]);
+        printf("\n");
     }
     for (p = 0; p < 4; p++)
         if (nfree[0][p] < ncards[p])

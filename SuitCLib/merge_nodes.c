@@ -6,8 +6,8 @@
 //      of the first node to create a new list of boards for the first node.
 //
 //  parameters:
-//      node1           in      the first sibling
-//      node2           in      the second sibling
+//      lnode           in      the first sibling
+//      bnode           in      the second sibling
 //
 //  Copyright 2024, Gerrit A. van der Velde, Leiden
 

@@ -184,7 +184,10 @@ int evaluate_mp_results(void)
 
         //  print lists of equivalent MP or IMP plays
         lscore = score[0].r;
-        printf("\n\n\nThe matchpoint strategy\n=======================\n\n");
+        if (matchpoint == MP)
+            printf("\n\n\nThe matchpoint strategy\n=======================\n\n");
+        else
+            printf("\n\n\nThe IMP strategy\n================\n\n");
         while (lscore->r) {
             printf("\tperc=%7.4f    list:", 100.0 * lscore->perc);
             bscore = lscore;

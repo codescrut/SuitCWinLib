@@ -47,7 +47,7 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_root, in
     *pTreeElementCount = 0;
 
     //  return if the root of the tree is the NIL entry
-    if (root->d == NIL)
+    if (root == NIL)
         return;
 
     //  determine the length of the output strings
@@ -123,7 +123,7 @@ void print_tree(char* optimumdetails, bool addJsonOptimumDetails, int d_root, in
                 cards |= sc->c[i];
 
         //  select the NS card to be played; lead highest from equals, follow lowest from equals
-        if (!(foldselect & 0x2) && NS(lnode[d]->p) && !printhighcard && cards != 0x1 && cards != addcard(ruff)) {
+        if (NS(lnode[d]->p) && !printhighcard && cards != 0x1 && cards != addcard(ruff)) {
             cards &= brd[(d - 1) / 4][lnode[d]->p];
             if ((d & 0x3) == 1)
                 while (cards ^ low_c(cards))

@@ -45,7 +45,7 @@ int process_args(int argc, char** argv)
                     else                                               cutoff = cutoff * 10 + argv[i][k] - '0';
                     k++;
                 }
-                cutoff = cutoff ? MAX(cutoff, 10000L) : CUTOFF;
+                cutoff = cutoff ? MAX(cutoff, 20000L) : CUTOFF;
             }
             else if (c == 'D') {
                 defence = YES;
@@ -87,6 +87,15 @@ int process_args(int argc, char** argv)
                 else if (c == 'w' && argv[i][2] == 'm')
                     ncardsmin[west] = val;
             }
+            else if (c == 'F' && argv[i][2] == 's') {
+                k = 3;
+                val = 0;
+                while (argv[i][k]) {
+                    val = 10 * val + argv[i][k] - '0';
+                    k++;
+                }
+                foldskip = val;
+            }
             else if (c == 'F') {
                 k = 2;
                 val = 0;
@@ -98,6 +107,18 @@ int process_args(int argc, char** argv)
             }
             else if (c == 'f')
                 printfulltree = YES;
+            else if (c == 'H') {
+                c = argv[i][2];
+                throwin |= c == 'W' || c == 'w' ? 1 << west
+                         : c == 'N' || c == 'n' ? 1 << north
+                         : c == 'E' || c == 'e' ? 1 << east
+                         : c == 'S' || c == 's' ? 1 << south
+                         : throwin;
+                if (!throwin) {
+                    printf("Incorrect player can be thrown in: %s; the program stops\n", argv[i]);
+                    return -1;
+                }
+            }
             else if (c == 'h')
                 printoptions = YES;
             else if (c == 'I') {
@@ -158,10 +179,29 @@ int process_args(int argc, char** argv)
                 if (val)
                     maxnodes = val;
             }
+            else if (c == 'm') {
+                if ((argv[i][2] == 'U' || argv[i][2] == 'u') && (argv[i][3] == 'S' || argv[i][3] == 's'))
+                    foldmode = 2;
+                else if (argv[i][2] == 'U' || argv[i][2] == 'u')
+                    foldmode = 1;
+                else if ((argv[i][2] == 'D' || argv[i][2] == 'u') && (argv[i][3] == 'S' || argv[i][3] == 's'))
+                    foldmode = 4;
+                else if (argv[i][2] == 'D' || argv[i][2] == 'd')
+                    foldmode = 3;
+                else {
+                    printf("Incorrect foldmode: %s; the program stops\n", argv[i]);
+                    return -1;
+                }
+            }
             else if (c == 'o')
                 reorder = SUITCAPP ? YES : NO;
-            else if (c == 'P')
+            else if (c == 'P') {
                 printoption = argv[i][2] - '0';
+                if (printoption < 0 || printoption > 3) {
+                    printf("Incorrect print option %s; the program stops\n", argv[i]);
+                    return -1;
+                }
+            }
             else if (c == 'p') {
                 c = argv[i][2];
                 if (c == 'H')
@@ -169,7 +209,7 @@ int process_args(int argc, char** argv)
                 else if (c == 'I' || c == 'M')
                     printallmatchpoint = YES;
                 else if (c == 'S')
-                    printscard = SUITCAPP ? NO : YES;
+                    printscard = SUITCAPP ? YES : YES;
                 else {
                     printf("Incorrect print option; the program stops\n");
                     return -1;
@@ -202,7 +242,6 @@ int process_args(int argc, char** argv)
                 }
                 h3rule[nrules] = cards;
                 nrules++;
-                buildtree = 1;
             }
             else if (c == 'T') {
                 k = 2;
@@ -305,8 +344,8 @@ int process_args(int argc, char** argv)
     printf("\n");
     printf("calling sequence:\n");
     printf("\n");
-    printf("SuitC [{-?|-h}] [-A] [-a] [-b] [-c<cutoff>[kKmMgG]] [-D[{W|w}]] [-d] [-E<cards>] [-em<n>] [-ev<n>] [-F<options>] [-f]\n");
-    printf("      [-L{n|e|s|w}[<card>]] [-l{n|e|s|w}<n>] [-M[nodes]] [-o] [-P<n>] [-p[{H|I|M|S}]] [-R{n|e|s|w}<n>] \n");
+    printf("SuitC [{-?|-h}] [-A] [-a] [-b] [-c<cutoff>[kKmMgG]] [-D[{W|w}]] [-d] [-E<cards>] [-em<n>] [-ev<n>] [-F<n>] [-Fs<n>] [-f] [-H{W|w|N|n|E|e|S|s}]\n");
+    printf("      [-L{n|e|s|w}[<card>]] [-l{n|e|s|w}<n>] [-M[nodes]] [-m{U|US|D|DS}] [-o] [-P<n>] [-p[{H|I|M|S}]] [-R{n|e|s|w}<n>] \n");
     printf("      [-r] [-S<card2>:<card3>] [-T<n>] [-t<tricks>] [-u] [-W<cards>] [-wm<n>] [-wv<n>] [-z<n>] <ncards> <scards> <ewcards>\n");
     printf("\n");
     printf("options:\n");
@@ -324,13 +363,17 @@ int process_args(int argc, char** argv)
     printf("    -E<cards>       all east hands contain <cards>\n");
     printf("    -em<n>          the minimum number of cards in the east hand is <n>\n");
     printf("    -ev<n>          the number of vacant places in the east hand is <n>\n");
-    printf("    -F<n>           1=fold the EW plays, 2=fold the NS plays, 4=select the NS plays\n");
+    printf("    -F<n>           1=fold the EW plays, 2=fold the NS plays, 4=select the NS plays, 8=select the NS plays followed by fold the EW plays\n");
+    printf("    -Fs<n>          don't fold the first <n> plies of the tree\n");
     printf("    -f              print the full NODE tree\n");
+    printf("    -H{W|w|N|n|E|e|S|s}\n");
+    printf("                    the designated player leads to the current trick if he won the last trick\n");
     printf("    -I<n>:<score>   the score for <n> tricks is <score> points\n");
     printf("    -L{n|e|s|w}[<card>]\n");
     printf("                    the lead is in {n|e|s|w} at trick one\n");
     printf("                    card <card> is lead if a card is specified\n");
     printf("    -l{n|e|s|w}<n>  limit the number of free directed leads from {n|e|s|w} to <n>\n");
+    printf("    -m{U|US|D|DS}   select the fold mode for the final game tree (U=UP, US=UPSTRIDE, D=DOWN, DS=DOWNSTRIDE)\n");
     printf("    -M[nodes]       generate the optimal MP play with maximal <nodes> nodes\n");
     printf("    -o              switch the order of the boards\n");
     printf("                    if SUITCAPP==NO:  print the east-west hands in decreasing number of cards in the West hand\n");

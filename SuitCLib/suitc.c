@@ -163,6 +163,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     eastfixed = RENONCE;
     eastvac = NCARDS;
     ewwinners = NO;
+    foldmode = 1;    //  1=UP, 2=UPSTRIDE, 3=DOWN, 4=DOWNSTRIDE
+    foldskip = 0;
     leader = noplayer;
     matchpoint = NO;
     matchpointtime = NO;
@@ -173,6 +175,8 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
         nfree[0][p] = NCARDS;
     for (p = 0; p < 4; p++)
         nruff[0][p] = 0;
+    for (i = 0; i <= NCARDS; i++)
+        pointscore[i] = 0;
     opening_lead = 0x7fff;
     printallmatchpoint = NO;
     printallresults = NO;
@@ -188,6 +192,7 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     reorder = SUITCAPP ? NO : YES;
     resultsonly = NO;
     usesuitentries = NO;
+    throwin = NO;
     trace = 0x0;
     tricklimit = NCARDS;
     for (d = 0; d < NPLIES + 1; d++)

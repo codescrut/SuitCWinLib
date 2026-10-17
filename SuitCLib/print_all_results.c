@@ -143,6 +143,10 @@ void print_all_results(char* output, char* optimumdetails)
                         use_suit_entries();
 
                     //  fold identical plays and select the preferred ones
+                    if (maxprint && foldselect & 0x8) {
+                        select_ns_plays(1);
+                        fold_tree(1, west);
+                    }
                     if (maxprint && foldselect & 0x1)
                         fold_tree(1, west);
                     if (maxprint && foldselect & 0x2)
@@ -159,10 +163,7 @@ void print_all_results(char* output, char* optimumdetails)
                         output_add(optimumdetails, "\n");
                     }
                     // printf("print_tree\n");
-                    if (tnode[0]->d)
-                        print_tree(optimumdetails, addJsonOptimumDetails, 1, maxprint, tnode[0]->d, YES, YES, treeElements, &treeElementsCount);
-                    else
-                        print_tree(optimumdetails, addJsonOptimumDetails, 0, maxprint, tnode[0], YES, YES, treeElements, &treeElementsCount);
+                    print_tree(optimumdetails, addJsonOptimumDetails, 1, maxprint, tnode[0]->d, YES, YES, treeElements, &treeElementsCount);
                     // printf("print_tree done\n");
 
                     //for (int i = 0; i < treeElementsCount; i++) {

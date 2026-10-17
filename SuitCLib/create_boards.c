@@ -81,7 +81,7 @@ int create_boards(char* output)
     if (leader == west && opening_lead != 0x7fff) {
         sc = &scards[0][west];
         for (i = 0; i <= sc->n; i++)
-            if (opening_lead & sc->n)
+            if (opening_lead & sc->c[i])
                 for (k = two; k < ace; k++)
                     if (addcard(k) & opening_lead && addcard(k + 1) & sc->c[i])
                         opening_lead = (opening_lead ^ addcard(k)) | addcard(k + 1);

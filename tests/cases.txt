@@ -7,10 +7,18 @@ eight-ever:         AKJT 432 Q98765
 two-way:            KJ9 432 AQT8765
 summary:            -a KJ9 432 AQT8765
 results-only:       -r AKJT 432 Q98765
+boards:             -b AQJ 432 KT98765
+all-results:        -A AQ 32 KJT987654
 
 # --- game tree presentation
 fold-none:          -F0 AQ2 543 KJT9876
 fold-compact:       -F3 AJ9 K32 QT87654
+dutch-upper:        -P3 HB9 V32 AT87654
+highcard:           -pH AKJT 432 Q98765
+select-then-fold:   -F8 KJ9 432 AQT8765
+fold-skip:          -Fs2 KJ9 432 AQT8765
+fold-mode-down:     -mD KJ9 432 AQT8765
+fold-mode-upstride: -mUS KJ9 432 AQT8765
 
 # --- restrictions on the deal and the play
 west-holds-king:    -WK AQJ 432 KT98765
@@ -25,11 +33,13 @@ no-entries:         -Ls -ls0 AQ2 543 KJT9876
 ruffs:              -Rn1 AQ 5432 KJT9876
 third-hand-rule:    -Ls -S9876:J AKJT32 54 Q9876
 defence:            -D K2 3 AQJT987654
+throw-in:           -HE -Ls KJ9 432 AQT8765
 
 # --- scoring objectives
 matchpoints:        -M AKJT32 54 Q9876
 matchpoints-mixed:  -b -d -M -pM -Ls -ln0 -S9876:J AKJT32 54 Q9876
 imps:               -pI -I0:-300 -I1:-200 -I2:-100 -I3:620 -I4:650 AK43 J52 QT9876
+imps-no-scores:     -I AK43 J52 QT9876
 suit-entries:       -u QJ6 KT73 A98542
 zermelo:            -z1 AQT9 J32 K87654
 
