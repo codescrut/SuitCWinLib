@@ -16,6 +16,9 @@ The first open-source release. Changes since 0.9.1.0:
   - The IMP scores of `-I` are reset on every call; they used to carry over to
     the next call in the same process.
   - `-P<n>` outside 0..3 is rejected, and the minimum `-c` cutoff is 20000.
+- `-I` without `<n>:<score>` wrote a score through an uninitialised trick
+  count, which crashed the Linux and macOS libraries. It now only selects IMP
+  scoring, and a trick count above 13 is rejected.
 - MIT licence, README, API documentation and credits.
 - `call_suitc` returns valid JSON when the command line is invalid; the error
   message was not escaped and broke the document.

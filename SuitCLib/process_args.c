@@ -125,6 +125,7 @@ int process_args(int argc, char** argv)
                 matchpoint = IMP;
                 matchpointtime = IMP;
                 k = 2;
+                n = -1;     //  plain -I: IMP scoring without scores
                 val = 0;
                 sign = +1;
                 while (argv[i][k]) {
@@ -141,7 +142,12 @@ int process_args(int argc, char** argv)
                         val = 10 * val + c - '0';
                     k++;
                 }
-                pointscore[n] = sign * val;
+                if (n > NCARDS) {
+                    printf("Incorrect number of tricks in %s; the program stops\n", argv[i]);
+                    return -1;
+                }
+                if (n >= 0)
+                    pointscore[n] = sign * val;
             }
             else if (c == 'L') {
                 c = argv[i][2];
