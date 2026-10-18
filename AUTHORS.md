@@ -5,7 +5,8 @@
   [github.com/ThorvaldAagaard/SuitC](https://github.com/ThorvaldAagaard/SuitC).
 - **Lars Kappel Hansen** ported SuitC to Microsoft Visual C++, and wrote the
   JSON interface, the C# demo, and the restricted-choice handling of played
-  tricks. His port also runs the SuitC web service behind CCAnalyzer.
+  tricks. His port also runs the
+  [SuitC web service](https://bridge.esmarkkappel.dk/suitc/main.html).
 - **Thorvald Aagaard** maintains SuitCWinLib. He added played tricks, the
   Linux and macOS builds and the robustness fixes listed in the
   [changelog](CHANGELOG.md), and integrated SuitC into the bridge robot BEN.

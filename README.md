@@ -7,7 +7,7 @@ other language that can call a C function can use it to find the best way
 to play a suit.
 
 It is used by the bridge robots [BEN](https://github.com/lorserker/ben) and
-Lia, and by CCAnalyzer.
+Lia, and by the [SuitC web application](https://bridge.esmarkkappel.dk/suitc/main.html).
 
 | Platform | Library |
 |---|---|
