@@ -192,7 +192,6 @@ int suitc_main( int argc, char **argv, char* output, char* optimumdetails )
     reorder = SUITCAPP ? NO : YES;
     resultsonly = NO;
     usesuitentries = NO;
-    throwin = NO;
     trace = 0x0;
     tricklimit = NCARDS;
     for (d = 0; d < NPLIES + 1; d++)

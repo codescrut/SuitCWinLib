@@ -33,13 +33,11 @@ no-entries:         -Ls -ls0 AQ2 543 KJT9876
 ruffs:              -Rn1 AQ 5432 KJT9876
 third-hand-rule:    -Ls -S9876:J AKJT32 54 Q9876
 defence:            -D K2 3 AQJT987654
-throw-in:           -HE -Ls KJ9 432 AQT8765
 
 # --- scoring objectives
 matchpoints:        -M AKJT32 54 Q9876
 matchpoints-mixed:  -b -d -M -pM -Ls -ln0 -S9876:J AKJT32 54 Q9876
 imps:               -pI -I0:-300 -I1:-200 -I2:-100 -I3:620 -I4:650 AK43 J52 QT9876
-imps-no-scores:     -I AK43 J52 QT9876
 suit-entries:       -u QJ6 KT73 A98542
 zermelo:            -z1 AQT9 J32 K87654
 
@@ -53,3 +51,6 @@ played-seat-leader: AQJ 432 KT98765 s25Q6
 error-third-hand:   -S9876:J AKJT32 54 Q9876
 error-bad-trick:    AQJ 432 KT98765 Ls2KA
 error-no-leader:    AQJ 432 KT98765 25Q6
+error-imps-bare:    -I AK43 J52 QT9876
+error-imps-no-count: -I5 AK43 J52 QT9876
+error-imps-count:   -EQ -I20:100 AK43 J52 QT9876

@@ -268,7 +268,6 @@ extern SUITC_API int    resultsonly;
 extern SUITC_API int    usesuitentries;
 extern SUITC_API int    poolfull;
 extern SUITC_API int    resultrange;
-extern SUITC_API int    throwin;
 extern SUITC_API int    trace;
 extern SUITC_API int    treeoverflow;
 extern SUITC_API int    tricklimit;

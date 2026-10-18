@@ -77,7 +77,6 @@ int    resultsonly;
 int    usesuitentries;
 int    poolfull;
 int    resultrange;
-int    throwin;
 int    trace;
 int    treeoverflow;
 int    tricklimit;

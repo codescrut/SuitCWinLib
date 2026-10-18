@@ -73,8 +73,6 @@ int create_tricks(int d)
     //  determine who can lead to this trick
     if (t == 1 && leader != noplayer)
         lead[leader] = YES;
-    else if (throwin & (1 << wnode[d - 1]->w_p) && brd[t][wnode[d - 1]->w_p])
-        lead[wnode[d - 1]->w_p] = YES;
     else if (defence) {
         lead[west] = brd[t][west] && (wnode[d - 1]->w_p == west || t == 1 || nfree[t - 1][west]);
         lead[east] = brd[t][east] && (wnode[d - 1]->w_p == east || t == 1 || nfree[t - 1][east]);
