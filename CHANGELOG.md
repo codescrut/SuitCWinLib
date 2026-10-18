@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.0.1 (2026-10-18)
+
+- Updated to SuitC Rev 2.022 from Gerrit van der Velde.
+  - Throw-in (`-H`) is removed again (Rev 2.021).
+  - Folding the east-west plays is back to the Rev 2.011 code, which also
+    handles `-D`, where both West and East can lead (Rev 2.021).
+  - `-I` without a complete `<n>:<score>` is rejected with an error document.
+    Rev 2.022 rejects a missing or zero score; the library also rejects a
+    missing trick count (`-I5`) or one above 13.
+
 ## 1.0.0.0 (2026-10-17)
 
 The first open-source release. Changes since 0.9.1.0:

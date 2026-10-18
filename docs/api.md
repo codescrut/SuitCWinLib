@@ -14,7 +14,7 @@ void free_memory(void);
 
 ## version
 
-Returns the library version as a static ASCII string, such as `"1.0.0.0"`.
+Returns the library version as a static ASCII string, such as `"1.0.0.1"`.
 
 ## call_suitc
 
