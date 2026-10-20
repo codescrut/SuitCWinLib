@@ -9,6 +9,8 @@
   - `-I` without a complete `<n>:<score>` is rejected with an error document.
     Rev 2.022 rejects a missing or zero score; the library also rejects a
     missing trick count (`-I5`) or one above 13.
+- The DLL version resource says 1.0.0.1; it still said 0.9.1.0.
+- Debug x64 builds work (tested by Lars); the notes saying Debug is broken are updated.
 
 ## 1.0.0.0 (2026-10-17)
 

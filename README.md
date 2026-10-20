@@ -51,7 +51,8 @@ and the played-tricks syntax.
 **Release** for x64 or x86, or run `SuitCLib\build_dll.bat [x64|x86]`. The DLL
 is written to `SuitCLib\x64\Release\` (x64) or `SuitCLib\Release\` (x86). It
 links the C runtime statically, so it needs no Visual C++ Redistributable.
-Debug builds do not work; use Release.
+Debug x64 builds give the same results, about three times slower; Win32 Debug
+has not been tested.
 
 The demo project copies the x64 DLL when you build it:
 

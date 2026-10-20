@@ -4,7 +4,7 @@ REM Visual Studio is located with vswhere, and the solution is taken from this
 REM script's own directory, so the script works from any checkout on any box.
 REM
 REM Usage: build_dll.bat [x64|x86]     (x64 is the default)
-REM Note: Debug builds of this project are broken -- Release only.
+REM Debug x64 also works (same results, about 3x slower); this script builds Release.
 setlocal
 
 set "PLATFORM=%~1"

@@ -15,7 +15,8 @@ SuitCWinLib is a Windows DLL port of **SuitC**, a Bridge card game suit combinat
 
 Open `SuitCLib.sln` in VS2022 and build in **Release** configuration (x64 or x86).
 
-**Important: Debug builds are broken. Always use Release mode.**
+Debug x64 builds work and give the same results as Release, about three times
+slower. Win32 Debug has not been tested. Use Release for anything you ship.
 
 The solution contains two projects:
 - **SuitCLib** (C++ DLL) → produces `SuitCLib.dll`
