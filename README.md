@@ -48,8 +48,9 @@ and the played-tricks syntax.
 ## Building
 
 **Windows** (Visual Studio 2022 or later): open `SuitCLib/SuitCLib.sln` and build
-**Release** for x64 or x86, or run `SuitCLib\build_dll.bat [x64|x86]`. The DLL
-is written to `SuitCLib\x64\Release\` (x64) or `SuitCLib\Release\` (x86). It
+**Release** for x64 or x86, or run `SuitCLib\build_dll.bat [x64|x86]`. The
+project uses the default toolset of whichever Visual Studio builds it (v143 for
+2022, v145 for 2026). The DLL is written to `SuitCLib\x64\Release\` (x64) or `SuitCLib\Release\` (x86). It
 links the C runtime statically, so it needs no Visual C++ Redistributable.
 Debug x64 builds give the same results, about three times slower; Win32 Debug
 has not been tested.

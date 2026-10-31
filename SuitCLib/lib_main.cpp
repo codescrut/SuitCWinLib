@@ -156,7 +156,7 @@ extern "C" EXPORT int CALLCONV
 
 
 	int suitcResult = suitc_main(argc, argv, output, optimumDetails);
-	int outputLen = strlen(output);
+	int outputLen = (int)strlen(output);
 	for (int i = 0; i < outputLen; i++)
 	{
 		(*ppcharOutput)[i] = output[i];
@@ -164,7 +164,7 @@ extern "C" EXPORT int CALLCONV
 	(*ppcharOutput)[outputLen] = L'\0';
 	*pCharOutputSize = outputLen;
 
-	outputLen = strlen(optimumDetails);
+	outputLen = (int)strlen(optimumDetails);
 	for (int i = 0; i < outputLen; i++)
 	{
 		(*ppcharOptimumDetails)[i] = optimumDetails[i];

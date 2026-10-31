@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- The project uses the default platform toolset of the Visual Studio that
+  builds it (v143 for 2022, v145 for 2026), so it builds with only VS 2026
+  installed (#2).
+- Two C4267 warnings in `lib_main.cpp` are fixed.
+
 ## 1.0.0.1 (2026-10-18)
 
 - Updated to SuitC Rev 2.022 from Gerrit van der Velde.
